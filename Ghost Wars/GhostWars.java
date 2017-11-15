@@ -135,7 +135,6 @@ public class GhostWars extends JPanel implements Runnable {
 			serverData=new String(buf);
 			serverData=serverData.trim();
 
-			//Study the following kids. 
 			if (!connected && serverData.startsWith("CONNECTED")){
 				connected=true;
 				System.out.println("Connected.");
@@ -244,21 +243,6 @@ public class GhostWars extends JPanel implements Runnable {
         	socket.send(packet);
         }catch(Exception e){}
 		
-	}
-
-	class KeyHandler extends KeyAdapter{
-		public void keyPressed(KeyEvent ke){
-			prevX=x;prevY=y;
-			switch (ke.getKeyCode()){
-			case KeyEvent.VK_DOWN:y+=yspeed;break;
-			case KeyEvent.VK_UP:y-=yspeed;break;
-			case KeyEvent.VK_LEFT:x-=xspeed;break;
-			case KeyEvent.VK_RIGHT:x+=xspeed;break;
-			}
-			if (prevX != x || prevY != y){
-				send("PLAYER "+name+" "+x+" "+y);
-			}	
-		}
 	}
 
 	public static void main(String [] args){
