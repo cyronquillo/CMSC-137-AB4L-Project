@@ -27,7 +27,7 @@ public class ClientThread extends Thread{
 			usr = input.readLine().trim();
 
 			//notify other clients that a new client has entered
-			output.println("Hello " + usr + "!\nYou can leave the room by typing 'bye' and press Enter.");
+			output.println("Hello " + usr + "!\n[NOTE: type 'bye' and press Enter to leave the room anytime]");
 			synchronized (this) {
 				for(int i = 0; i < threads.size(); i++){
 					if(threads.get(i) != this){

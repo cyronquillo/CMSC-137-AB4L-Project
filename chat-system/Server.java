@@ -18,6 +18,7 @@ public class Server{
 			return;
 		} else{
 			port = Integer.valueOf(args[0]).intValue();
+			System.out.println("Server now listens to port " + port + "...");
 		}
 
 		// initialization of server socket
