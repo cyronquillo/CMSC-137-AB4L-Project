@@ -8,7 +8,7 @@ public class Server{
 	private static ServerSocket sSocket;
 	private static Socket cSocket;
 
-	private static ArrayList<ClientThread> threads = new ArrayList<ClientThread>();
+	public static ArrayList<ClientThread> threads = new ArrayList<ClientThread>();
 	
 	// arg[0] = port number
 	public static void main(String args[]){
@@ -32,7 +32,7 @@ public class Server{
 		while (true) {
 			try{
 				cSocket = sSocket.accept();
-				threads.add(new ClientThread(cSocket, threads));
+				threads.add(new ClientThread(cSocket));
 				threads.get(threads.size()-1).start();
 				System.out.println("Current number of clients: " + threads.size());
 			} catch (IOException ioe) {
