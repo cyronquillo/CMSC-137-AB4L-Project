@@ -1,209 +1,136 @@
-import java.io.IOException;
-import java.net.DatagramPacket;
+package instantiation;
 import java.net.DatagramSocket;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.ArrayList;
+import java.net.DatagramPacket;
+import java.io.IOException;
 
-/**
- * The main game server. It just accepts the messages sent by one player to
- * another player
- *
- */
 
-public class GhostWarsServer implements Runnable, Constants{
-	/**
-	 * Placeholder for the data received from the player
-	 */	 
-	String playerData;
-	
-	/**
-	 * The number of currently connected player
-	 */
-	int playerCount=0;
-	/**
-	 * The socket
-	 */
-    DatagramSocket serverSocket = null;
-    
-    /**
-     * The current game state
-     */
-	public static GameState game;
+public class GhostWarsServer implements Runnable, Constants {
 
-	/**
-	 * The current game stage
-	 */
-	int gameStage=WAITING_FOR_PLAYERS;
+	String player_data; // contains message from player
 	
-	/**
-	 * Number of players
-	 */
-	int numPlayers;
+	int client_count;
+	int curr_client_count;
 	
-	/**
-	 * The main game thread
-	 */
-	Thread t = new Thread(this);
+	DatagramSocket server_socket;
 	
-	/**
-	 * Simple constructor
-	 */
-	public GhostWarsServer(int numPlayers){
-		this.numPlayers = numPlayers;
-		try {
-            serverSocket = new DatagramSocket(PORT);
-			serverSocket.setSoTimeout(100);
-		} catch (IOException e) {
-            System.err.println("Could not listen on port: "+PORT);
-            System.exit(-1);
-		}catch(Exception e){}
-		//Create the game state
+	GameState game;
+	
+	int game_stage;
+
+	Thread t;
+
+	public GhostWarsServer(int client_count){
+		game_stage = WAITING_FOR_PLAYERS;
+		this.client_count = client_count;
+		curr_client_count = 0;
+		try{
+			server_socket = new DatagramSocket(PORT);
+			server_socket.setSoTimeout(100);
+		} catch (IOException ioe) {
+			System.err.println("Could not listen to port: " + PORT);
+			System.exit(-1);
+		} catch (Exception e){}
+
 		game = new GameState();
+
+		System.out.println("Game has been launched. Waiting for players.");
 		
-		System.out.println("Game created...");
-		
-		//Start the game thread
+		t = new Thread(this);
 		t.start();
 	}
-	
-	/**
-	 * Helper method for broadcasting data to all players
-	 * @param msg
-	 */
-	public void broadcast(String msg){
-		for(Iterator ite=game.getPlayers().keySet().iterator();ite.hasNext();){
-			String name=(String)ite.next();
-			NetPlayer player=(NetPlayer)game.getPlayers().get(name);			
-			send(player,msg);	
+
+	public void broadcast(String message){
+		for(String name: game.getPlayers().keySet()){
+
+			Sprite sprite = game.getPlayers().get(name);
+			send(sprite, message);
 		}
 	}
 
-
-	/**
-	 * Send a message to a player
-	 * @param player
-	 * @param msg
-	 */
-	public void send(NetPlayer player, String msg){
-		DatagramPacket packet;	
-		byte buff[] = msg.getBytes();		
-		packet = new DatagramPacket(buff, buff.length, player.getAddress(),player.getPort());
-		try{
-			serverSocket.send(packet);
-		}catch(IOException ioe){
+	public void send(Sprite sprite, String message){
+		byte buffer[] = message.getBytes();
+		DatagramPacket packet = new DatagramPacket(buffer, buffer.length, sprite.getIP(), sprite.getPort());
+		try {
+			server_socket.send(packet);
+		} catch(IOException ioe){
 			ioe.printStackTrace();
 		}
 	}
-	
-	/**
-	 * The juicy part
-	 */
+
+	private void printDataString(String data){
+		if(!data.equals("")){
+			System.out.println(data);
+		}
+	}
+
 	public void run(){
 		while(true){
-						
-			// Get the data from players
-			byte[] buff = new byte[256];
-			DatagramPacket packet = new DatagramPacket(buff, buff.length);
+			byte[] buffer = new byte[256];
+			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 			try{
-     			serverSocket.receive(packet);
-			}catch(Exception ioe){}
-			
-			/**
-			 * Convert the array of bytes to string
-			 */
-			playerData=new String(buff);
-			
-			//remove excess bytes
-			playerData = playerData.trim();
-			if (!playerData.equals("")){
-				System.out.println("Player Data:"+playerData);
+				server_socket.receive(packet);
+			}catch (Exception e){}
+
+			player_data = new String(buffer);
+			player_data = player_data.trim();
+			//printDataString(player_data); // checking
+
+
+			switch(game_stage){
+				case WAITING_FOR_PLAYERS:
+					if (player_data.startsWith("CONNECT")) {
+						String data_tokens[] = player_data.split(" ");
+						String name = data_tokens[1].trim();
+						Sprite sprite = new Sprite(name, packet.getAddress(), packet.getPort(), curr_client_count);
+						curr_client_count++;
+						game.update(name, sprite);
+						System.out.println("player " + curr_client_count + " has entered.");
+						broadcast("CONNECTED " + name);
+						if(curr_client_count == client_count){
+
+							game_stage = GAME_START;
+						}
+  					}
+  					break;
+  				case GAME_START:
+  					System.out.println("Game State: START");
+  					broadcast("START");
+  					game_stage = IN_PROGRESS;
+  					break;
+  				case IN_PROGRESS:
+  					if (player_data.startsWith("PLAYER")) {
+  						String[] sprite_state = player_data.split(" ");
+  						String name = sprite_state[1];
+  						int x = Integer.parseInt(sprite_state[2].trim());
+  						int y = Integer.parseInt(sprite_state[3].trim());
+  						String position = sprite_state[4].trim();
+  						Sprite sprite = game.getPlayers().get(name);
+  						sprite.setX(x);
+  						sprite.setY(y);
+  						sprite.setState(sprite.getColor() + "." + position);
+
+  						game.update(name, sprite);
+
+  						broadcast(game.toString());
+
+  					}
+  					break;
 
 			}
-		
-			// process
-			switch(gameStage){
-				  case WAITING_FOR_PLAYERS:
-						//System.out.println("Game State: Waiting for players...");
-						if (playerData.startsWith("CONNECT")){
-							String tokens[] = playerData.split(" ");
-							NetPlayer player=new NetPlayer(tokens[1],packet.getAddress(),packet.getPort(), playerCount);
-							System.out.println("Player connected: "+tokens[1]);
-							game.update(tokens[1].trim(),player);
-							broadcast("CONNECTED "+tokens[1]);
-							playerCount++;
-							if (playerCount==numPlayers){
-								gameStage=GAME_START;
-							}
-						}
-					  break;	
-				  case GAME_START:
-					  System.out.println("Game State: START");
-					  broadcast("START");
-					  gameStage=IN_PROGRESS;
-					  break;
-				  case IN_PROGRESS:
-					  	//System.out.println("Game State: IN_PROGRESS");
-					  
-					  	//Player data was received!
-					  	if (playerData.startsWith("PLAYER")){
-						  	//Tokenize:
-						  	//The format: PLAYER <player name> <x> <y>
-						  	String[] playerInfo = playerData.split(" ");					  
-						  	String pname =playerInfo[1];
-						  	int x = Integer.parseInt(playerInfo[2].trim());
-						  	int y = Integer.parseInt(playerInfo[3].trim());
-						  	String state = playerInfo[4];
-						  	//Get the player from the game state
-						  	NetPlayer player=(NetPlayer)game.getPlayers().get(pname);								  
-						  	player.setX(x);
-						  	player.setY(y);
-						  	player.setState(state);
-						  	//Update the game state
-						  	game.update(pname, player);
-						  	//Send to all the updated game state
-						  	broadcast(game.toString());
-					  	}
-					  	/*if(playerData.startsWith("MISSILE")){
-					  		System.out.println("Missile shooted!");
-					  		String[] missileInfo = playerData.split(" ");
-					  		String pname = missileInfo[1];
-						  	int x = Integer.parseInt(missileInfo[2].trim());
-						  	int y = Integer.parseInt(missileInfo[3].trim());
-						  	int status = Integer.parseInt(missileInfo[4].trim());
-  							int prevX = Integer.parseInt(missileInfo[5].trim());
-							int prevY = Integer.parseInt(missileInfo[6].trim());
 
-						  	NetPlayer player=(NetPlayer)game.getPlayers().get(pname);
-						  	int j = 0;
-						  	for( j = 0; j < player.ammo.size(); j++){
-						  		if(prevY == player.ammo.get(j).getY() && prevX == player.ammo.get(j).getX()) break;
-						  	}								  
-							if(status == 0){
-								player.ammo.get(j).setX(x);
-								player.ammo.get(j).setY(y);
-							}
-							else{
-								player.ammo.remove(player.ammo.get(j));
-							}
-							game.update(pname,player);
 
-							broadcast(game.toString());
-					  	}*/
-					  	break;
-			}				  
+
 		}
-	}	
-	
-	
-	public static void main(String args[]){
+	}
+
+	public static void main(String[] args){
 		if (args.length != 1){
-			System.out.println("Usage: java -jar GhostWarsServer <number of players>");
+			System.out.println("Usage: java GhostWarsServer <number of players>");
 			System.exit(1);
 		}
-		
+
 		new GhostWarsServer(Integer.parseInt(args[0]));
 	}
-}
 
+
+}

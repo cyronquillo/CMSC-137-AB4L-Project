@@ -1,53 +1,35 @@
+package instantiation;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-/**
- * The class that contains the state of the game.
- * The game state refers the current position of the players etc.
- */
-
 
 public class GameState{
-	/**
-	 * This is a map(key-value pair) of <player name,NetPlayer>
-	 */
-	private Map players=new HashMap();
-	
-	/**
-	 * Simple constructor
-	 *
-	 */
-	public GameState(){}
-	
-	/**
-	 * Update the game state. Called when player moves
-	 * @param name
-	 * @param player
-	 */
-	public void update(String name, NetPlayer player){
-		players.put(name,player);
+
+
+	private HashMap<String, Sprite> players;
+
+
+	public GameState(){
+		players = new HashMap<String,Sprite>();
 	}
-	
-	/**
-	 * String representation of this object. Used for data transfer
-	 * over the network
-	 */
+
+
+	public void update(String name, Sprite sprite){
+		players.put(name, sprite);
+	}
+
+
 	public String toString(){
-		String retval="";
-		for(Iterator ite=players.keySet().iterator();ite.hasNext();){
-			String name=(String)ite.next();
-			NetPlayer player=(NetPlayer)players.get(name);
-			retval+=player.toString()+":";
+		String return_value = "";
+		for(String key: players.keySet()){
+			return_value += 
+				players.get(key).toString() + ":";
 		}
-		return retval;
+		return return_value;
 	}
-	
-	/**
-	 * Returns the map
-	 * @return
-	 */
-	public Map getPlayers(){
+
+
+
+	public HashMap<String, Sprite> getPlayers(){
 		return players;
 	}
+
 }

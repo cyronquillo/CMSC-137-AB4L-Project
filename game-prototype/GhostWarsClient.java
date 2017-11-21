@@ -1,281 +1,170 @@
+package instantiation;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseListener;
+// import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.awt.Image;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.awt.Image;
-import java.util.ArrayList;
-
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-/**
- * The game client itself!
- *
- */
 
 public class GhostWarsClient extends JPanel implements Runnable, Constants{
-	/**
-	 * Main window
-	 */
-	JFrame frame= new JFrame();
-	static int nthClient = 0;
-	/**
-	 * Player position, speed etc.
-	 */
-	int x=10,y=10,xspeed=5,yspeed=5,prevX,prevY;
-	
-	/**
-	 * Game timer, handler receives data from server to update game state
-	 */
-	Thread t=new Thread(this);
-	String color;
-	/**
-	 * Nice name!
-	 */
-	String name="Cyrez";
-	
-	/**
-	 * Player name of others
-	 */
-	String pname;
-	String initState = "redDown";
-	/**
-	 * Server to connect to
-	 */
-	String server="localhost";
+	private JFrame frame;
+	private int x,y,x_speed,y_speed, prev_x, prev_y;
+	private Thread t;
+	private String player_name;
+	private String server_ip;
+	private boolean is_connected;
+	private DatagramSocket socket;
+	private String server_data;
+	private BufferedImage offscreen;
 
-	/**
-	 * Flag to indicate whether this player has connected or not
-	 */
-	boolean connected=false;
-	
-	/**
-	 * get a datagram socket
-	 */
-    DatagramSocket socket = new DatagramSocket();
+	public GhostWarsClient(String server_ip, String player_name){
+		this.x = 10;
+		this.y = 10;
+		this.x_speed = 5;
+		this.y_speed = 5;
 
-	
-    /**
-     * Placeholder for data received from server
-     */
-	String serverData;
-	
-	/**
-	 * Offscreen image for double buffering, for some
-	 * real smooth animation :)
-	 */
-	BufferedImage offscreen;
 
-	
-	/**
-	 * Basic constructor
-	 * @param server
-	 * @param name
-	 * @throws Exception
-	 */
-	public GhostWarsClient(String server,String name) throws Exception{
-		this.server=server;
-		this.name=name;
+		this.is_connected = false;
+		this.server_ip = server_ip;
+		this.player_name = player_name;
+		this.frame = new JFrame(APP_NAME + ":" + player_name);
 		
-		frame.setTitle(APP_NAME+":"+name);
-		//set some timeout for the socket
-		socket.setSoTimeout(100);
-		
-		//Some gui stuff i hate.
+		try{
+			socket = new DatagramSocket();
+			socket.setSoTimeout(100);
+		} catch(Exception e){}
+
 		frame.getContentPane().add(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(640, 480);
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		frame.setVisible(true);
-		
-		//create the buffer
-		offscreen=(BufferedImage)this.createImage(640, 480);
-		
-		//Some gui stuff again...
-		frame.addKeyListener(new KeyHandler());		
-		// frame.addMouseMotionListener(new MouseMotionHandler());
-		frame.addMouseListener(new MouseAction());
 
-		switch(nthClient){
-			case 0:
-				this.color = "red";
-				break;
-			case 1:
-				this.color = "blue";
-				break;
-			case 2:
-				this.color = "orange";
-				break;
-			case 3:
-				this.color = "pink";
-				break;
-		}
+		offscreen=(BufferedImage)this.createImage(FRAME_WIDTH, FRAME_HEIGHT);
 
-		//tiime to play
-		t.start();		
+		frame.addKeyListener(new KeyHandler());
+
+		t = new Thread(this);
+		t.start();
 	}
-	
-	/**
-	 * Helper method for sending data to server
-	 * @param msg
-	 */
-	public void send(String msg){
+
+	public void send(String message){
 		try{
-			byte[] buf = msg.getBytes();
-        	InetAddress address = InetAddress.getByName(server);
-        	DatagramPacket packet = new DatagramPacket(buf, buf.length, address, PORT);
-        	socket.send(packet);
-        }catch(Exception e){}
-		
+			byte[] buffer = message.getBytes();
+			InetAddress address = InetAddress.getByName(server_ip);
+			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, PORT);
+			socket.send(packet);
+		} catch(Exception e){}
 	}
-	
-	/**
-	 * The juicy part!
-	 */
+
+	private void printDataString(String data){
+		if(!data.equals("")){
+			System.out.println(data);
+		}
+	}
+
 	public void run(){
 		while(true){
-			/*try{
-				Thread.sleep(1);
-			}catch(Exception ioe){}*/
-						
-			//Get the data from players
-			byte[] buff = new byte[256];
-			DatagramPacket packet = new DatagramPacket(buff, buff.length);
+			try { 
+				Thread.sleep(0);
+			} catch(Exception e){}
+
+			byte[] buffer = new byte[1024];
+			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 			try{
-     			socket.receive(packet);
-			}catch(Exception ioe){/*lazy exception handling :)*/}
+				socket.receive(packet);
+			} catch(Exception e){}
 			
-			serverData=new String(buff);
-			serverData=serverData.trim();
-			
-			//if (!serverData.equals("")){
-			//	System.out.println("Server Data:" +serverData);
-			//}
+			server_data = new String(buffer);
+			server_data = server_data.trim();
+			// printDataString(server_data);
 
-			//Study the following kids. 
-			if (!connected && serverData.startsWith("CONNECTED")){
-				connected=true;
-				System.out.println("Connected.");
-			}else if (!connected){
-				System.out.println("Connecting..");				
-				send("CONNECT "+name);
-			}else if (connected){
-				offscreen.getGraphics().clearRect(0, 0, 640, 480);
-				if (serverData.startsWith("PLAYER")){
-					String[] playersInfo = serverData.split(":");
-					for (int i=0;i<playersInfo.length;i++){
-						String[] playerInfo = playersInfo[i].split(" ");
-						String pname =playerInfo[1];
-						int x = Integer.parseInt(playerInfo[2]);
-						int y = Integer.parseInt(playerInfo[3]);
-						String state = playerInfo[4];
-						/*
-					  	NetPlayer player=(NetPlayer)GhostWarsServer.game.getPlayers().get(pname);
-
-						ArrayList<Missile> ammo = player.ammo;
-						for(int j = 0; j < ammo.size(); j++){
-							offscreen.getGraphics().fillOval(ammo.get(j).getX(), ammo.get(j).getY(), 10, 10);
-
-						}*/
-						//draw on the offscreen image
-						Image img = gfx.returnImage(state);
-						offscreen.getGraphics().drawImage(img,x, y,30,30, null);
-						offscreen.getGraphics().drawString(pname,x+7,y-5);
-
-					}
+			if (!is_connected){
+				if (server_data.startsWith("CONNECTED")){
+					is_connected = true;
+					System.out.println("Connected to the server boi!");
+					String name = server_data.split(" ")[1].trim();
+				} else {
+					System.out.println("Connecting..");
+					send("CONNECT " + player_name);
 				}
-					//show the changes
-					frame.repaint();		
-			}			
+			} else {
+				// frame.setVisible(true);
+				if(server_data.startsWith("PLAYER")){
+					offscreen.getGraphics().clearRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+					String[] sprites = server_data.split(":");
+					for(int i = 0; i < sprites.length; i++){
+						String[] sprite = sprites[i].split(" ");
+						String name = sprite[1].trim();
+						int x = Integer.parseInt(sprite[2]);
+						int y = Integer.parseInt(sprite[3]);
+						String state = sprite[4].trim();
+						String[] temp = state.split("\\.");
+						String color = temp[0];
+						String position = temp[1];
+						Image img = gfx.returnImage(color + position);
+						offscreen.getGraphics().drawImage(img, x, y, 40, 40, null);
+						offscreen.getGraphics().drawString(name, x, y);
+					}
+					frame.repaint();
+				}
+			} 
+
+
 		}
 	}
-	
-	/**
-	 * Repainting method
-	 */
+
 	public void paintComponent(Graphics g){
 		g.drawImage(offscreen, 0, 0, null);
-	}
-	
-	
-	
-	
-	/*class MouseMotionHandler extends MouseMotionAdapter{
-		public void mouseMoved(MouseEvent me){
-			x=me.getX();y=me.getY();
-			if (prevX != x || prevY != y){
-				send("PLAYER "+name+" "+x+" "+y);
-			}				
-		}
-	}*/
-	
-	class MouseAction implements MouseListener{
-		public void mousePressed(MouseEvent e) {
-			System.out.println("Mouse clicked!");
-		}
-
-	    public void mouseReleased(MouseEvent e) {}
-
-	    public void mouseEntered(MouseEvent e) {}
-
-	    public void mouseExited(MouseEvent e) {}
-
-	    public void mouseClicked(MouseEvent e) {}
 	}
 
 	class KeyHandler extends KeyAdapter{
 		public void keyPressed(KeyEvent ke){
-			
-			prevX=x;prevY=y;
-			// if(ke.getKeyCode() != KeyEvent.VK_SPACE){
-				switch (ke.getKeyCode()){
-					case KeyEvent.VK_DOWN:
-						y+=yspeed;
-						initState = color+"Down";
-						break;
-					case KeyEvent.VK_UP:
-						y-=yspeed;
-						initState = color+"Down";
-						break;
-					case KeyEvent.VK_LEFT:
-						x-=xspeed;
-						initState = color+"Left";
-						break;
-					case KeyEvent.VK_RIGHT:
-						x+=xspeed;
-						initState = color+"Right";
-						break;
-				}
-				if (prevX != x || prevY != y){
-					send("PLAYER "
-						+ name + " " 
-						+ x + " "
-						+ y + " "
-						+ initState
-					);
-				}	
-			// } else{
-				/*Missile m = new Missile(name, x, y, initState, server);
-				Thread t = new Thread(m);
-				t.start();*/
-			// }
+			String position = "";
+			prev_x = x;
+			prev_y = y;
+			switch(ke.getKeyCode()){
+				case KeyEvent.VK_DOWN:
+					y += y_speed;
+					position = "Down";
+					break;
+				case KeyEvent.VK_UP:
+					y -= y_speed;
+					position = "Up";
+					break;
+				case KeyEvent.VK_LEFT:
+					x -= x_speed;
+					position = "Left";
+					break;
+				case KeyEvent.VK_RIGHT:
+					x += x_speed;
+					position = "Right";					
+					break;
+			}
+			if (prev_x != x || prev_y != y){
+				send("PLAYER " 
+					+ player_name + " " 
+					+ x + " " 
+					+ y + " " 
+					+ position
+				);
+			}
 		}
 	}
-	
-	
-	public static void main(String args[]) throws Exception{
-		if (args.length != 2){
-			System.out.println("Usage: java -jar GhostWarsClient <server> <player name>");
+
+	public static void main(String[] args){
+		if(args.length != 2){
+			System.out.println("Usage: java GhostWarsClient <server IP> <player name>");
 			System.exit(1);
 		}
 
 		new GhostWarsClient(args[0],args[1]);
 	}
+
+
+
 }
