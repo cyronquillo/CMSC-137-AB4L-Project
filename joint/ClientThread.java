@@ -18,10 +18,8 @@ public class ClientThread extends Thread{
 		try{
 			input = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
 			output = new PrintStream(cSocket.getOutputStream());
-			String usr;
+			String usr = cSocket.getRemoteSocketAddress().toString();
 
-			output.println("Enter your name below ");
-			usr = input.readLine().trim();
 
 			//notify other clients that a new client has entered
 			output.println("Hello " + usr + "!\n[NOTE: type 'bye' and press Enter to leave the room anytime]");
