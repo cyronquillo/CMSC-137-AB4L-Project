@@ -81,11 +81,11 @@ public class GhostWarsServer implements Runnable, Constants {
 					if (player_data.startsWith("CONNECT")) {
 						String data_tokens[] = player_data.split(" ");
 						String name = data_tokens[1].trim();
-						Sprite sprite = new Sprite(name, packet.getAddress(), packet.getPort(), curr_client_count);
+						Sprite sprite = new Sprite(name, packet.getAddress(), packet.getPort(), curr_client_count, this, game);
 						curr_client_count++;
 						game.update(name, sprite);
 						System.out.println("player " + curr_client_count + " has entered.");
-						broadcast("CONNECTED " + name);
+						broadcast("CONNECTED " + name + " " + (curr_client_count-1) );
 						if(curr_client_count == client_count){
 
 							game_stage = GAME_START;
@@ -96,6 +96,7 @@ public class GhostWarsServer implements Runnable, Constants {
   					System.out.println("Game State: START");
   					broadcast("START");
   					game_stage = IN_PROGRESS;
+
   					break;
   				case IN_PROGRESS:
   					if (player_data.startsWith("PLAYER")) {
@@ -111,9 +112,23 @@ public class GhostWarsServer implements Runnable, Constants {
 
   						game.update(name, sprite);
 
-  						broadcast(game.toString());
-
+  						// broadcast(game.toString());
   					}
+  					if (player_data.startsWith("MISSILE")) {
+  						String[] missile_state = player_data.split(" ");
+  						String src = missile_state[1];
+  						int x = Integer.parseInt(missile_state[2].trim());
+  						int y = Integer.parseInt(missile_state[3].trim());
+  						String position = missile_state[4].trim();
+
+  						game.addMissile(new Missile(x, y, src, position, game.getMissiles(), this, game));
+
+  						
+  					}
+  					// if (game.missileCount() != 0){
+  					// 	game.updateMissiles();
+  					// 	broadcast(game.toString());
+  					// }
   					break;
 
 			}
@@ -130,7 +145,6 @@ public class GhostWarsServer implements Runnable, Constants {
 		}
 
 		new GhostWarsServer(Integer.parseInt(args[0]));
-		System.out.println("yay chat naman");
 		new ServerChat();
 	}
 

@@ -9,7 +9,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import java.awt.Color;
+import java.util.Random;
 
 public class GhostWarsClient extends JPanel implements Runnable, Constants{
 	private JFrame frame;
@@ -21,10 +24,17 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 	private DatagramSocket socket;
 	private String server_data;
 	private BufferedImage offscreen;
+	private String position;
+
 
 	public GhostWarsClient(String server_ip, String player_name){
-		this.x = 10;
-		this.y = 10;
+		super();
+		this.setOpaque(true);
+		this.position = "Up";
+		Random rand = new Random();
+
+		this.x = rand.nextInt(14)+1 * (FRAME_WIDTH-40) / 15;
+		this.y = rand.nextInt(14)+1 * (FRAME_HEIGHT-40) / 15;
 		this.x_speed = 5;
 		this.y_speed = 5;
 
@@ -33,21 +43,21 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 		this.server_ip = server_ip;
 		this.player_name = player_name;
 		this.frame = new JFrame(APP_NAME + ":" + player_name);
-		
 		try{
 			socket = new DatagramSocket();
 			socket.setSoTimeout(100);
 		} catch(Exception e){}
-
+		this.add(new JLabel("GG!"));
 		frame.getContentPane().add(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		frame.setVisible(true);
-
+		this.setBackground(Color.RED);
+		this.setForeground(Color.RED);
 		offscreen=(BufferedImage)this.createImage(FRAME_WIDTH, FRAME_HEIGHT);
-
+		offscreen.getGraphics().setColor(Color.RED);
 		frame.addKeyListener(new KeyHandler());
-
+		this.repaint();
 		t = new Thread(this);
 		t.start();
 	}
@@ -85,9 +95,15 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 
 			if (!is_connected){
 				if (server_data.startsWith("CONNECTED")){
+					int x = Integer.parseInt(server_data.split(" ")[2]);
+					String color = getSpriteColor(x);
+					Image img = gfx.returnImage(color + position);
+					offscreen.getGraphics().drawImage(img, x+12, y, 40, 40, null);
+					offscreen.getGraphics().drawString(player_name, x+12, y);
 					is_connected = true;
 					System.out.println("Connected to the server boi!");
 					String name = server_data.split(" ")[1].trim();
+					this.repaint();
 				} else {
 					System.out.println("Connecting..");
 					send("CONNECT " + player_name);
@@ -96,21 +112,31 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 				// frame.setVisible(true);
 				if(server_data.startsWith("PLAYER")){
 					offscreen.getGraphics().clearRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
-					String[] sprites = server_data.split(":");
-					for(int i = 0; i < sprites.length; i++){
-						String[] sprite = sprites[i].split(" ");
-						String name = sprite[1].trim();
-						int x = Integer.parseInt(sprite[2]);
-						int y = Integer.parseInt(sprite[3]);
-						String state = sprite[4].trim();
-						String[] temp = state.split("\\.");
-						String color = temp[0];
-						String position = temp[1];
-						Image img = gfx.returnImage(color + position);
-						offscreen.getGraphics().drawImage(img, x, y, 40, 40, null);
-						offscreen.getGraphics().drawString(name, x, y);
+					String[] objects = server_data.split(":");
+					for(int i = 0; i < objects.length; i++){
+						String[] object = objects[i].split(" ");
+						if(object[0].startsWith("PLAYER")){
+							String name = object[1].trim();
+							int x = Integer.parseInt(object[2]);
+							int y = Integer.parseInt(object[3]);
+							String state = object[4].trim();
+							String[] temp = state.split("\\.");
+							String color = temp[0];
+							String position = temp[1];
+							Image img = gfx.returnImage(color + position);
+							offscreen.getGraphics().drawImage(img, x, y, 40, 40, null);
+							offscreen.getGraphics().drawString(name, x, y);
+						} else if(object[0].startsWith("MISSILE")){
+							String src = object[1].trim();
+							int x = Integer.parseInt(object[2]);
+							int y = Integer.parseInt(object[3]);
+							// offscreen.getGraphics().drawString(src + " lol", x, y);
+							offscreen.getGraphics().fillOval(x, y, 10, 10);
+
+						}
+
 					}
-					frame.repaint();
+					this.repaint();
 				}
 			} 
 
@@ -119,12 +145,34 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 	}
 
 	public void paintComponent(Graphics g){
+    	super.paintComponent(g);
 		g.drawImage(offscreen, 0, 0, null);
 	}
 
+	public void update(Graphics g){
+           paintComponent(g);
+    }
+
+    public String getSpriteColor(int x){
+    	String color = "";
+    	switch(x%4){
+			case 0:
+				color = "red";
+				break;
+			case 1:
+				color = "blue";
+				break;
+			case 2:
+				color = "orange";
+				break;
+			case 3:
+				color = "pink";
+				break;
+		}
+		return color;
+    }
 	class KeyHandler extends KeyAdapter{
 		public void keyPressed(KeyEvent ke){
-			String position = "";
 			prev_x = x;
 			prev_y = y;
 			switch(ke.getKeyCode()){
@@ -143,6 +191,14 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 				case KeyEvent.VK_RIGHT:
 					x += x_speed;
 					position = "Right";					
+					break;
+				case KeyEvent.VK_SPACE:
+					send("MISSILE "
+						+ player_name + " "
+						+ x + " "
+						+ y + " "
+						+ position + "wards"
+					);
 					break;
 			}
 			if (prev_x != x || prev_y != y){

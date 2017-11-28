@@ -1,6 +1,6 @@
 package instantiation;
 import java.net.InetAddress;
-public class Sprite{
+public class Sprite implements Runnable{
 	private InetAddress ip;
 	private int port;
 	private String name;
@@ -9,7 +9,14 @@ public class Sprite{
 	private String color;
 	private String state;
 	private String position;
-	public Sprite(String name, InetAddress ip, int port, int ith){
+	private int prev_x;
+	private int prev_y;
+	private GhostWarsServer broadcaster;
+	private GameState game;
+	private Thread t;
+	public Sprite(String name, InetAddress ip, int port, int ith, GhostWarsServer broadcaster, GameState game){
+		this.broadcaster = broadcaster;
+		this.game = game;
 		this.ip = ip;
 		this.name = name;
 		this.port = port;
@@ -30,6 +37,10 @@ public class Sprite{
 		}
 		this.position = "Up"; // default
 		this.state = this.color + "." + this.position;
+		t = new Thread(this);
+		
+		t.start();
+
 	}
 
 	public InetAddress getIP(){
@@ -78,5 +89,18 @@ public class Sprite{
 							 + y + " "
 							 + state;
 		return return_string;
+	}
+
+	public void run(){
+		while(true){
+			try{
+				Thread.sleep(5);
+			} catch(Exception e){}
+			if(prev_x != x || prev_y != y){
+				prev_x = x;
+				prev_y = y;
+				broadcaster.broadcast(game.toString());
+			}
+		}
 	}
 }
