@@ -1,0 +1,120 @@
+package instantiation;
+import java.net.InetAddress;
+public class Sprite extends RenderableObject implements Runnable{
+	public static final int SIZE = 40;
+	private static CollisionChecker cc;
+	private InetAddress ip;
+	private int port;
+	private String name;
+	//private int x,y;
+	private int ith;
+	private String color;
+	private String state;
+	private String position;
+	private int prev_x;
+	private int prev_y;
+	private GhostWarsServer broadcaster;
+	private GameState game;
+	private Thread t;
+	public Sprite(String name, InetAddress ip, int port, int ith, GhostWarsServer broadcaster, GameState game){
+		super(10,10,false,SIZE);
+		this.broadcaster = broadcaster;
+		this.game = game;
+		this.cc = new CollisionChecker(this.game);
+		this.ip = ip;
+		this.name = name;
+		this.port = port;
+		this.ith = ith;
+		switch(ith%4){
+			case 0:
+				this.color = "red";
+				break;
+			case 1:
+				this.color = "blue";
+				break;
+			case 2:
+				this.color = "orange";
+				break;
+			case 3:
+				this.color = "pink";
+				break;
+		}
+		this.position = "Up"; // default
+		this.state = this.color + "." + this.position;
+		t = new Thread(this);
+		
+		t.start();
+
+	}
+
+	public InetAddress getIP(){
+		return ip;
+	}
+
+	public int getPort(){
+		return port;
+	}
+
+	public String getName(){
+		return name;
+	}
+
+	public int getX(){
+		return this.xPos;
+	}
+
+	public int getY(){
+		return this.yPos;
+	}
+
+	public String getState(){
+		return state;
+	}
+
+	public String getColor(){
+		return color;
+	}
+	public void setX(int x){
+		this.xPos = x;
+	}
+	
+	public void setY(int y){
+		this.yPos = y;
+	}
+
+	public void setState(String state){
+		this.state = state;
+		String[] temp = state.split("\\.");
+		this.position = temp[1];
+	}
+	public String toString(){
+		String return_string = "PLAYER " + name + " "
+							 + this.xPos + " "
+							 + this.yPos + " "
+							 + state;
+		return return_string;
+	}
+
+	public void run(){
+		while(true){
+			try{
+				Thread.sleep(5);
+			} catch(Exception e){}
+
+			cc.checkCollision(this);
+
+			if(prev_x != this.xPos || prev_y != this.yPos){
+				prev_x = this.xPos;
+				prev_y = this.yPos;
+				broadcaster.broadcast(game.toString());
+			}
+		}
+	}
+
+	//If a collision occurs
+	public void collisionAction(){
+		this.xPos = prev_x;
+		this.yPos = prev_y;
+		broadcaster.broadcast(game.toString());
+	}	
+}
