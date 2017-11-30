@@ -1,8 +1,12 @@
 package instantiation;
+
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.awt.Image;
 import java.net.DatagramPacket;
@@ -29,6 +33,8 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 	private String server_data;
 	private BufferedImage offscreen;
 	private String position;
+
+	public GhostWarsClient() {}
 
 	public GhostWarsClient(String server_ip, String player_name, ChatAccess access){
 		super();
@@ -57,6 +63,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 		frame.add(this, BorderLayout.CENTER);
 		this.setFocusable(true);
 		frame.addKeyListener(new KeyHandler());
+		frame.addMouseListener(new MouseAction());
 		this.add(new JLabel("GG!"));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(223+FRAME_WIDTH, FRAME_HEIGHT);
@@ -184,6 +191,20 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 		}
 		return color;
     }
+
+    class MouseAction implements MouseListener{
+		public void mousePressed(MouseEvent e) {
+			frame.requestFocus();
+		}
+
+	    public void mouseReleased(MouseEvent e) {}
+
+	    public void mouseEntered(MouseEvent e) {}
+
+	    public void mouseExited(MouseEvent e) {}
+
+	    public void mouseClicked(MouseEvent e) {}
+	}
 
 	class KeyHandler extends KeyAdapter{
 		public void keyPressed(KeyEvent ke){
