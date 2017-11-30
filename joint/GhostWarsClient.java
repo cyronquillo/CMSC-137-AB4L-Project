@@ -32,6 +32,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 	private DatagramSocket socket;
 	private String server_data;
 	private BufferedImage offscreen;
+	private BufferedImage offscreenMissile;
 	private String position;
 
 	public GhostWarsClient() {}
@@ -68,11 +69,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(223+FRAME_WIDTH, FRAME_HEIGHT);
 		frame.setVisible(true);
-		this.setBackground(Color.RED);
-		this.setForeground(Color.RED);
 
-		offscreen=(BufferedImage)this.createImage(FRAME_WIDTH, FRAME_HEIGHT);
-		offscreen.getGraphics().setColor(Color.RED);
+		offscreen = (BufferedImage)this.createImage(FRAME_WIDTH, FRAME_HEIGHT);
+		// offscreenMissile = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, BufferedImage.TYPE_INT_RGF)
 		this.repaint();
 	}
 
@@ -167,6 +166,8 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 	public void paintComponent(Graphics g){
     	super.paintComponent(g);
 		g.drawImage(offscreen, 0, 0, null);
+
+		// g.drawImage( offscreenMissile, 10,10, null);
 	}
 
 	public void update(Graphics g){
@@ -214,7 +215,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 				case KeyEvent.VK_DOWN:
 					y += y_speed;
 					position = "Down";
-					System.out.println("down");
 					break;
 				case KeyEvent.VK_UP:
 					y -= y_speed;

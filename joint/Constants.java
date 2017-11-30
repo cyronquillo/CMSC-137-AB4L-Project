@@ -17,8 +17,8 @@ public interface Constants {
 	public static final GFXLibrary gfx = new GFXLibrary();
 
 	//frame
-	public static final int FRAME_WIDTH = 640;
-	public static final int FRAME_HEIGHT = 480;
+	public static final int FRAME_WIDTH = 800;
+	public static final int FRAME_HEIGHT = 600;
 
 	//delimiter
 	public static final String ATTR_DELIM = " ";
