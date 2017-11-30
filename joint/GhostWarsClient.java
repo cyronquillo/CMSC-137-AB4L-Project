@@ -2,7 +2,7 @@ package instantiation;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-// import java.awt.event.KeyListener;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.awt.Image;
 import java.net.DatagramPacket;
@@ -13,9 +13,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.util.Random;
+import java.io.IOException;
+import javax.swing.*;
+import java.awt.*;
 
 public class GhostWarsClient extends JPanel implements Runnable, Constants{
 	private JFrame frame;
+	private ChatAccess access;
 	private int x,y,x_speed,y_speed, prev_x, prev_y;
 	private Thread t;
 	private String player_name;
@@ -26,8 +30,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 	private BufferedImage offscreen;
 	private String position;
 
-
-	public GhostWarsClient(String server_ip, String player_name){
+	public GhostWarsClient(String server_ip, String player_name, ChatAccess access){
 		super();
 		this.setOpaque(true);
 		this.position = "Up";
@@ -47,17 +50,27 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 			socket = new DatagramSocket();
 			socket.setSoTimeout(100);
 		} catch(Exception e){}
+
+		frame.setLayout(new BorderLayout());
+		JPanel chatPanel = new ChatPanel(access);
+		frame.add(chatPanel, BorderLayout.WEST);
+		frame.add(this, BorderLayout.CENTER);
+		this.setFocusable(true);
+		frame.addKeyListener(new KeyHandler());
 		this.add(new JLabel("GG!"));
-		frame.getContentPane().add(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		frame.setSize(223+FRAME_WIDTH, FRAME_HEIGHT);
 		frame.setVisible(true);
 		this.setBackground(Color.RED);
 		this.setForeground(Color.RED);
+
 		offscreen=(BufferedImage)this.createImage(FRAME_WIDTH, FRAME_HEIGHT);
 		offscreen.getGraphics().setColor(Color.RED);
-		frame.addKeyListener(new KeyHandler());
 		this.repaint();
+	}
+
+	public void begin() {
+		frame.requestFocus();
 		t = new Thread(this);
 		t.start();
 	}
@@ -150,7 +163,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 	}
 
 	public void update(Graphics g){
-           paintComponent(g);
+        paintComponent(g);
     }
 
     public String getSpriteColor(int x){
@@ -171,6 +184,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 		}
 		return color;
     }
+
 	class KeyHandler extends KeyAdapter{
 		public void keyPressed(KeyEvent ke){
 			prev_x = x;
@@ -179,6 +193,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 				case KeyEvent.VK_DOWN:
 					y += y_speed;
 					position = "Down";
+					System.out.println("down");
 					break;
 				case KeyEvent.VK_UP:
 					y -= y_speed;
@@ -218,8 +233,22 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 			System.exit(1);
 		}
 
-		new GhostWarsClient(args[0],args[1]);
-		new ClientChat(args[0], args[1]);
+		else {
+            String server = args[0];
+            String name = args[1];
+            ChatAccess access = new ChatAccess();
+            GhostWarsClient game = new GhostWarsClient(server, name, access);
+           	
+
+            try {
+                access.InitSocket(server,PORT);
+                game.begin();
+            } catch (IOException ex) {
+                System.out.println("Cannot connect to " + server + ":" + PORT);
+                ex.printStackTrace();
+                System.exit(0);
+            }
+        }
 	}
 
 
