@@ -3,15 +3,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-public class TileMap{
+public class TileMap implements Constants{
 	private int x;
 	private int y;
 
 	private int tileSize;
 	private int[][] map;
-
-	public static final int MAP_HEIGHT = 15;
-	public static final int MAP_WIDTH = 20;
 
 	public TileMap(String s){
 		try{
@@ -39,5 +36,16 @@ public class TileMap{
 
 	public int[][] getMap(){
 		return this.map;
+	}
+
+	public String toString(){
+		String retval = "";
+		for(int i = 0; i < MAP_HEIGHT; i++){
+			for(int j = 0; j < MAP_WIDTH; j++){
+				retval += map[i][j] + " ";
+			}
+			retval += "\n";
+		}
+		return retval;
 	}
 }

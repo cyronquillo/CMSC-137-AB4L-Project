@@ -39,10 +39,11 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	public ChatAccess access;
 	public HashMap<String, ClientSprite> csHash;
 	public HashMap<String, ClientMissile> missileArr;
-	public GhostWarsClient() {}
+	private int map[][];
 
 	public GhostWarsClient(String server_ip, String player_name){
 		super();
+		this.map = new int[MAP_HEIGHT][MAP_WIDTH];
         access = new ChatAccess();
         missileArr = new HashMap<String, ClientMissile>();
         csHash = new HashMap<String, ClientSprite>();
@@ -71,14 +72,10 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		this.setFocusable(true);
 		frame.addKeyListener(new KeyHandler());
 		frame.addMouseListener(new MouseAction());
-		this.add(new JLabel("GG!"));
+		// this.add(new JLabel("GG!"));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(223+FRAME_WIDTH, FRAME_HEIGHT);
 		frame.setVisible(true);
-
-		// offscreen = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, BufferedImage.TYPE_INT_RGB);
-		// offscreenMissile = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, BufferedImage.TYPE_INT_RGF)
-		// this.repaint();
 	}
 
 	public void begin() {
@@ -119,7 +116,15 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 			// printDataString(server_data);
 
 			if (!is_connected){
-				if (server_data.startsWith("CONNECTED")){
+				if(server_data.startsWith("MAP")){
+					String map[] = server_data.split("\n");
+					for(int i = 0; i < MAP_HEIGHT; i++){
+						String row[] = map[i+1].split(" ");
+						for(int j = 0; j < MAP_WIDTH; j++){
+							this.map[i][j] =  Integer.parseInt(row[j]);
+						}
+					}
+				} else if (server_data.startsWith("CONNECTED")){
 					String object[] = server_data.split(" ");
 					int col = Integer.parseInt(object[2]);
 					this.x = Integer.parseInt(object[3]);
@@ -128,8 +133,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					Image img = gfx.returnImage(color + position);
 					ClientSprite spr = new ClientSprite(object[1].trim(), x, y, color, this.position, img);
 					csHash.put(object[1].trim(),spr);
-					// offscreen.getGraphics().drawImage(img, this.x, this.y, 40, 40, null);
-					// offscreen.getGraphics().drawString(player_name, this.x, this.y);
 					is_connected = true;
 					System.out.println("Connected to the server boi!");
 					String name = server_data.split(" ")[1].trim();
@@ -141,7 +144,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 			} else {
 				// frame.setVisible(true);
 				if(server_data.startsWith("PLAYER")){
-					// offscreen.getGraphics().clearRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 					String[] objects = server_data.split(":");
 					for(int i = 0; i < objects.length; i++){
 						String[] object = objects[i].split(" ");
@@ -181,15 +183,30 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
     	// g.fillOval(100,100,10,10);
 		// g.drawImage(offscreen, 0, 0, this);
 		g.fillRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
-
+		Image img = null;
+		for(int i = 0; i < MAP_HEIGHT; i++){
+			for(int j = 0; j < MAP_WIDTH; j++){
+				if(this.map[i][j] == TILE_FLOOR){
+					img = gfx.returnImage(GROUND);
+				} else if(this.map[i][j] == TILE_CORNER){
+					img = gfx.returnImage(CORNER);
+				} else if(this.map[i][j] == HORIZONTAL_BORDER){
+					img = gfx.returnImage(HORIZONTAL);
+				} else if(this.map[i][j] == VERTICAL_BORDER){
+					img = gfx.returnImage(VERTICAL);
+				}
+				g.drawImage(img,j*40,i*40, BLOCK_SIZE, BLOCK_SIZE, null);
+			}
+		}
     	for(String key: csHash.keySet()){
     		ClientSprite csp = csHash.get(key);
 		 	g.drawImage(csp.img, csp.x, csp.y, BLOCK_SIZE, BLOCK_SIZE, null);
+			Color curr = g.getColor();
+			g.setColor(this.getColor(csp.color));
 			g.drawString(csp.name, csp.x, csp.y);
+			g.setColor(curr);
     	}
     	for(String key: missileArr.keySet()){
-			g.drawString(missileArr.get(key).src + " lol", x, y);
-
     		Color curr = g.getColor();
     		String color = csHash.get(missileArr.get(key).src).color;
     		g.setColor(this.getColor(color));

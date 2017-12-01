@@ -107,6 +107,7 @@ public class GhostWarsServer implements Runnable, Constants {
 						curr_client_count++;
 						game.update(name, sprite);
 						System.out.println("player " + curr_client_count + " has entered.");
+						broadcast("MAP\n" + game.map.getTileMap().toString());
 						broadcast("CONNECTED " + name + " " + (curr_client_count-1) + " " + x + " " + y);
 						
 

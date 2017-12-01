@@ -38,6 +38,13 @@ public class GFXLibrary{
 			//dead sprite
 			gfxList.put("SpriteRIP", ImageIO.read(new File("gfx/sprites/dead.png")));
 
+
+			//blocks
+			gfxList.put("ground", ImageIO.read(new File("gfx/blocks/bcground.png")));			
+			gfxList.put("corner", ImageIO.read(new File("gfx/blocks/corner.png")));			
+			gfxList.put("horizontal", ImageIO.read(new File("gfx/blocks/horizontal.png")));			
+			gfxList.put("vertical", ImageIO.read(new File("gfx/blocks/vertical.png")));			
+		
 		} catch(Exception e){}
 	}
 
