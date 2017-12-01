@@ -56,6 +56,10 @@ public class ChatPanel extends JPanel implements Observer {
         chatBox.addActionListener(sendButtonListener);
     }
 
+    public void setFocus() {
+        chatBox.requestFocus();
+    }
+
     public void update(Observable o, Object arg) {
         final Object finalArg = arg;
         SwingUtilities.invokeLater(new Runnable() {

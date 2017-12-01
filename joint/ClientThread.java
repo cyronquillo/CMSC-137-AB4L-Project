@@ -18,7 +18,7 @@ public class ClientThread extends Thread{
 		try{
 			input = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
 			output = new PrintStream(cSocket.getOutputStream());
-			String usr = cSocket.getRemoteSocketAddress().toString();
+			String usr = input.readLine();
 
 
 			//notify other clients that a new client has entered

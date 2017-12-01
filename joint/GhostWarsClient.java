@@ -23,8 +23,9 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.ArrayList;
 
-public class GhostWarsClient extends JPanel implements Runnable, Constants{
+public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private JFrame frame;
+	private ChatPanel chatPanel;
 	private int x,y,x_speed,y_speed, prev_x, prev_y;
 	private Thread t;
 	private String player_name;
@@ -64,7 +65,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 		} catch(Exception e){}
 
 		frame.setLayout(new BorderLayout());
-		JPanel chatPanel = new ChatPanel(access);
+		chatPanel = new ChatPanel(access);
 		frame.add(chatPanel, BorderLayout.WEST);
 		frame.add(this, BorderLayout.CENTER);
 		this.setFocusable(true);
@@ -283,6 +284,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 						+ position + "wards"
 					);
 					break;
+				case KeyEvent.VK_C:
+					chatPanel.setFocus();
+					break;
 			}
 			if (prev_x != x || prev_y != y){
 				send("PLAYER " 
@@ -304,20 +308,17 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 		else {
             String server = args[0];
             String name = args[1];
-            GhostWarsClient game = new GhostWarsClient(server, name);
-           	
-
-            try {
-                game.access.InitSocket(server,PORT);
-                game.begin();
-            } catch (IOException ex) {
-                System.out.println("Cannot connect to " + server + ":" + PORT);
-                ex.printStackTrace();
-                System.exit(0);
-            }
-        }
-	}
-
-
-
+			try{
+            	GhostWarsClient game = new GhostWarsClient(server, name);
+            	game.access.InitSocket(server,PORT, name);
+            	game.begin();           
+	   		} catch (IOException ex) {
+	            System.out.println("Cannot connect to " + server + ":" + PORT);
+	            ex.printStackTrace();
+	            System.exit(0);
+	        }
+	    }
+    }
 }
+
+
