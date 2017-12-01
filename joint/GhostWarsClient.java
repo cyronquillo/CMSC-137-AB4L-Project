@@ -309,6 +309,11 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 
 	class KeyHandler extends KeyAdapter{
 		GhostWarsClient src;
+		boolean moveLeft = false;
+		boolean moveRight = false;
+		boolean moveDown = false;
+		boolean moveUp = false;
+
 		public KeyHandler(GhostWarsClient src){
 			this.src = src;
 		}
@@ -319,24 +324,46 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 				int y = src.getYVal();
 				prev_x = x;
 				prev_y = y;
+
 				switch(ke.getKeyCode()){
 					case KeyEvent.VK_DOWN:
 						y += y_speed;
 						position = "Down";
+						moveDown = true;
 						break;
 					case KeyEvent.VK_UP:
 						y -= y_speed;
 						position = "Up";
+						moveUp = true;
 						break;
 					case KeyEvent.VK_LEFT:
 						x -= x_speed;
 						position = "Left";
+						moveLeft = true;
 						break;
 					case KeyEvent.VK_RIGHT:
 						x += x_speed;
 						position = "Right";					
+						moveRight = true;
 						break;
 					case KeyEvent.VK_SPACE:
+						if (moveDown) {
+							y += y_speed;
+							position = "Down";
+						}
+						else if (moveUp) {
+							y -= y_speed;
+							position = "Up";
+						}
+						else if (moveLeft) {
+							x -= x_speed;
+							position = "Left";
+						}
+						else if (moveRight) {
+							x += x_speed;
+							position = "Right";
+						}
+
 						send("MISSILE "
 							+ player_name + " "
 							+ x + " "
@@ -346,8 +373,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 						break;
 					case KeyEvent.VK_ENTER:
 						chatPanel.setFocus();
-						break;
+						break;		
 				}
+				
 				if (prev_x != x || prev_y != y){
 					send("PLAYER " 
 						+ player_name + " " 
@@ -358,6 +386,23 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 				}
 			}
 			
+		}
+
+		public void keyReleased(KeyEvent ke) {
+			switch(ke.getKeyCode()) {
+				case KeyEvent.VK_RIGHT:
+					moveRight = false;
+					break;
+				case KeyEvent.VK_LEFT:
+					moveLeft = false;
+					break;
+				case KeyEvent.VK_UP:
+					moveUp = false;
+					break;
+				case KeyEvent.VK_DOWN:
+					moveDown = false;
+					break;
+			}
 		}
 	}
 
