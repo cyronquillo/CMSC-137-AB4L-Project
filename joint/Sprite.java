@@ -14,13 +14,15 @@ public class Sprite implements Runnable{
 	private GhostWarsServer broadcaster;
 	private GameState game;
 	private Thread t;
-	public Sprite(String name, InetAddress ip, int port, int ith, GhostWarsServer broadcaster, GameState game){
+	public Sprite(String name, InetAddress ip, int port, int ith, GhostWarsServer broadcaster, GameState game, int x, int y){
 		this.broadcaster = broadcaster;
 		this.game = game;
 		this.ip = ip;
 		this.name = name;
 		this.port = port;
 		this.ith = ith;
+		this.x = x;
+		this.y = y;
 		switch(ith%4){
 			case 0:
 				this.color = "red";

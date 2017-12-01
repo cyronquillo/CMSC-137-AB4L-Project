@@ -51,16 +51,19 @@ public class Missile extends Thread implements Constants{
 		this.y += this.y_inc;
 	}
 	public String toString(){
-		String return_string = "MISSILE " + src + " "
-							 + x + " "
-							 + y;
+		String return_string = "MISSILE " + this.src + " "
+							 + this.x + " "
+							 + this.y;
 		return return_string;
 	}
 
+	public String getSource(){
+		return this.src;
+	}
 	public void run(){
 		while(this.x > -30 && this.x < FRAME_WIDTH+30 && this.y < FRAME_HEIGHT+30 && this.y > -30 && this.is_collided == false){
 			try { 
-				Thread.sleep(3);
+				Thread.sleep(4);
 				this.update();
 				broadcaster.broadcast(game.toString());
 			} catch(Exception e){}

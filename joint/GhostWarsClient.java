@@ -20,10 +20,11 @@ import java.util.Random;
 import java.io.IOException;
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 public class GhostWarsClient extends JPanel implements Runnable, Constants{
 	private JFrame frame;
-	private ChatAccess access;
 	private int x,y,x_speed,y_speed, prev_x, prev_y;
 	private Thread t;
 	private String player_name;
@@ -34,17 +35,21 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 	private BufferedImage offscreen;
 	private BufferedImage offscreenMissile;
 	private String position;
-
+	public ChatAccess access;
+	public HashMap<String, ClientSprite> csHash;
+	public HashMap<String, ClientMissile> missileArr;
 	public GhostWarsClient() {}
 
-	public GhostWarsClient(String server_ip, String player_name, ChatAccess access){
+	public GhostWarsClient(String server_ip, String player_name){
 		super();
+        access = new ChatAccess();
+        missileArr = new HashMap<String, ClientMissile>();
+        csHash = new HashMap<String, ClientSprite>();
 		this.setOpaque(true);
 		this.position = "Up";
 		Random rand = new Random();
 
-		this.x = rand.nextInt(14)+1 * (FRAME_WIDTH-40) / 15;
-		this.y = rand.nextInt(14)+1 * (FRAME_HEIGHT-40) / 15;
+		
 		this.x_speed = 5;
 		this.y_speed = 5;
 
@@ -70,9 +75,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 		frame.setSize(223+FRAME_WIDTH, FRAME_HEIGHT);
 		frame.setVisible(true);
 
-		offscreen = (BufferedImage)this.createImage(FRAME_WIDTH, FRAME_HEIGHT);
+		// offscreen = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		// offscreenMissile = new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT, BufferedImage.TYPE_INT_RGF)
-		this.repaint();
+		// this.repaint();
 	}
 
 	public void begin() {
@@ -114,11 +119,16 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 
 			if (!is_connected){
 				if (server_data.startsWith("CONNECTED")){
-					int x = Integer.parseInt(server_data.split(" ")[2]);
-					String color = getSpriteColor(x);
+					String object[] = server_data.split(" ");
+					int col = Integer.parseInt(object[2]);
+					this.x = Integer.parseInt(object[3]);
+					this.y = Integer.parseInt(object[4]);
+					String color = getSpriteColor(col);
 					Image img = gfx.returnImage(color + position);
-					offscreen.getGraphics().drawImage(img, x+12, y, 40, 40, null);
-					offscreen.getGraphics().drawString(player_name, x+12, y);
+					ClientSprite spr = new ClientSprite(object[1].trim(), x, y, color, this.position, img);
+					csHash.put(object[1].trim(),spr);
+					// offscreen.getGraphics().drawImage(img, this.x, this.y, 40, 40, null);
+					// offscreen.getGraphics().drawString(player_name, this.x, this.y);
 					is_connected = true;
 					System.out.println("Connected to the server boi!");
 					String name = server_data.split(" ")[1].trim();
@@ -130,7 +140,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 			} else {
 				// frame.setVisible(true);
 				if(server_data.startsWith("PLAYER")){
-					offscreen.getGraphics().clearRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+					// offscreen.getGraphics().clearRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 					String[] objects = server_data.split(":");
 					for(int i = 0; i < objects.length; i++){
 						String[] object = objects[i].split(" ");
@@ -143,19 +153,21 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 							String color = temp[0];
 							String position = temp[1];
 							Image img = gfx.returnImage(color + position);
-							offscreen.getGraphics().drawImage(img, x, y, 40, 40, null);
-							offscreen.getGraphics().drawString(name, x, y);
+							ClientSprite spr = new ClientSprite(name, x, y, color, position, img);
+							csHash.put(name,spr);
 						} else if(object[0].startsWith("MISSILE")){
 							String src = object[1].trim();
 							int x = Integer.parseInt(object[2]);
 							int y = Integer.parseInt(object[3]);
+							missileArr.put(src, new ClientMissile(src, x, y));
 							// offscreen.getGraphics().drawString(src + " lol", x, y);
-							offscreen.getGraphics().fillOval(x, y, 10, 10);
-
+							// offscreen.getGraphics().fillOval(x, y, 10, 10);
 						}
 
 					}
 					this.repaint();
+				}else if(server_data.startsWith("MISSILE")){
+					System.out.println("posible ba to?");
 				}
 			} 
 
@@ -165,8 +177,24 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 
 	public void paintComponent(Graphics g){
     	super.paintComponent(g);
-		g.drawImage(offscreen, 0, 0, null);
+    	// g.fillOval(100,100,10,10);
+		// g.drawImage(offscreen, 0, 0, this);
+		g.fillRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 
+    	for(String key: csHash.keySet()){
+    		ClientSprite csp = csHash.get(key);
+		 	g.drawImage(csp.img, csp.x, csp.y, BLOCK_SIZE, BLOCK_SIZE, null);
+			g.drawString(csp.name, csp.x, csp.y);
+    	}
+    	for(String key: missileArr.keySet()){
+			g.drawString(missileArr.get(key).src + " lol", x, y);
+
+    		Color curr = g.getColor();
+    		String color = csHash.get(missileArr.get(key).src).color;
+    		g.setColor(this.getColor(color));
+			g.fillOval(missileArr.get(key).x, missileArr.get(key).y, 10, 10);
+    		g.setColor(curr);
+    	}
 		// g.drawImage( offscreenMissile, 10,10, null);
 	}
 
@@ -191,6 +219,25 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 				break;
 		}
 		return color;
+    }
+
+    public Color getColor(String col){
+    	Color color = null;
+    	switch(col){
+    		case "red":
+    			color = Color.RED;
+    			break;
+    		case "blue":
+    			color = Color.BLUE;
+    			break;
+    		case "orange":
+    			color = Color.ORANGE;
+    			break;
+    		case "pink":
+    			color = Color.PINK;
+    			break;
+    	}
+    	return color;
     }
 
     class MouseAction implements MouseListener{
@@ -257,12 +304,11 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 		else {
             String server = args[0];
             String name = args[1];
-            ChatAccess access = new ChatAccess();
-            GhostWarsClient game = new GhostWarsClient(server, name, access);
+            GhostWarsClient game = new GhostWarsClient(server, name);
            	
 
             try {
-                access.InitSocket(server,PORT);
+                game.access.InitSocket(server,PORT);
                 game.begin();
             } catch (IOException ex) {
                 System.out.println("Cannot connect to " + server + ":" + PORT);

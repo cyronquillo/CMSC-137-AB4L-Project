@@ -7,10 +7,12 @@ public class GameState{
 
 	private HashMap<String, Sprite> players;
 	private ArrayList<Missile> missiles;
+	public Map map; 
 
 	public GameState(){
 		players = new HashMap<String,Sprite>();
 		missiles = new ArrayList<Missile>();
+		map = new Map();
 	}
 
 

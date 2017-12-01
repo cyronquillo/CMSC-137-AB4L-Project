@@ -2,7 +2,8 @@ package instantiation;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.io.IOException;
-
+import java.util.Random;												//import statement
+import java.util.ArrayList;
 
 public class GhostWarsServer implements Runnable, Constants {
 
@@ -14,12 +15,14 @@ public class GhostWarsServer implements Runnable, Constants {
 	DatagramSocket server_socket;
 	
 	GameState game;
-	
 	int game_stage;
-
 	Thread t;
+	int[][] occupance;
+	Random rand;
 
 	public GhostWarsServer(int client_count){
+		rand = new Random();
+		occupance = new int[client_count][2];
 		game_stage = WAITING_FOR_PLAYERS;
 		this.client_count = client_count;
 		curr_client_count = 0;
@@ -63,6 +66,15 @@ public class GhostWarsServer implements Runnable, Constants {
 		}
 	}
 
+	public boolean is_occupied(int x, int y){
+		for(int i = 0; i < curr_client_count; i++){
+			System.out.println("hala pumasok");
+			if(occupance[curr_client_count][0] == x && 
+				occupance[curr_client_count][1] == y)
+					return true;
+		}
+		return false;
+	}
 	public void run(){
 		while(true){
 			byte[] buffer = new byte[256];
@@ -79,13 +91,25 @@ public class GhostWarsServer implements Runnable, Constants {
 			switch(game_stage){
 				case WAITING_FOR_PLAYERS:
 					if (player_data.startsWith("CONNECT")) {
+						int x,y;
 						String data_tokens[] = player_data.split(" ");
 						String name = data_tokens[1].trim();
-						Sprite sprite = new Sprite(name, packet.getAddress(), packet.getPort(), curr_client_count, this, game);
+						do{
+							x = rand.nextInt(20);
+							y = rand.nextInt(15);
+						}while((is_occupied(x,y)) || 
+							(game.map.getTileMap().getMap())[y][x] != TILE_FLOOR);
+						occupance[curr_client_count][0] = x;
+						occupance[curr_client_count][1] = y;
+						x = (x * FRAME_WIDTH / 20);
+						y = (y * FRAME_HEIGHT / 15);
+						Sprite sprite = new Sprite(name, packet.getAddress(), packet.getPort(), curr_client_count, this, game, x, y);
 						curr_client_count++;
 						game.update(name, sprite);
 						System.out.println("player " + curr_client_count + " has entered.");
-						broadcast("CONNECTED " + name + " " + (curr_client_count-1) );
+						broadcast("CONNECTED " + name + " " + (curr_client_count-1) + " " + x + " " + y);
+						
+
 						if(curr_client_count == client_count){
 
 							game_stage = GAME_START;
@@ -121,9 +145,15 @@ public class GhostWarsServer implements Runnable, Constants {
   						int y = Integer.parseInt(missile_state[3].trim());
   						String position = missile_state[4].trim();
 
-  						game.addMissile(new Missile(x, y, src, position, game.getMissiles(), this, game));
-
-  						
+  						ArrayList<Missile> mi = game.getMissiles();
+  						boolean zero_ammo = false;
+  						for(int i =0; i < mi.size(); i++){
+  							if(mi.get(i).getSource().equals(src)){
+  								zero_ammo = true;
+  							}
+  						}
+  						if(zero_ammo == false)
+	  						game.addMissile(new Missile(x, y, src, position, game.getMissiles(), this, game));
   					}
   					// if (game.missileCount() != 0){
   					// 	game.updateMissiles();
