@@ -41,9 +41,10 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	public HashMap<String, ClientMissile> missileArr;
 	private int map[][];
 	private KeyHandler kh;
-
+	private Boolean is_dead;
 	public GhostWarsClient(String server_ip, String player_name){
 		super();
+		this.is_dead = false;
 		this.map = new int[MAP_HEIGHT][MAP_WIDTH];
         access = new ChatAccess();
         missileArr = new HashMap<String, ClientMissile>();
@@ -153,15 +154,26 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 							String name = object[1].trim();
 							int x = Integer.parseInt(object[2]);
 							int y = Integer.parseInt(object[3]);
+							
+							Image img = null;
+							String color = "";
+							String state = object[4].trim();
+							Boolean is_dead = Boolean.parseBoolean(object[5]);
+							if(is_dead){
+								img = gfx.returnImage(state);
+								color = "white";
+								String position = "dead";
+							} else{
+								String[] temp = state.split("\\.");
+								color = temp[0];
+								String position = temp[1];
+								img = gfx.returnImage(color + position);
+							}
 							if(this.player_name.equals(name)){
 								this.x = x;
 								this.y = y;
+								this.is_dead = is_dead;
 							}
-							String state = object[4].trim();
-							String[] temp = state.split("\\.");
-							String color = temp[0];
-							String position = temp[1];
-							Image img = gfx.returnImage(color + position);
 							ClientSprite spr = new ClientSprite(name, x, y, color, position, img);
 							csHash.put(name,spr);
 						} else if(object[0].startsWith("MISSILE")){
@@ -265,6 +277,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
     		case "pink":
     			color = Color.PINK;
     			break;
+    		case "white":
+    			color = Color.WHITE;
+    			break;
     	}
     	return color;
     }
@@ -273,6 +288,10 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
     }
     public int getYVal(){
     	return this.y;
+    }
+
+    public boolean isDead(){
+    	return this.is_dead;
     }
     class MouseAction implements MouseListener{
 		public void mousePressed(MouseEvent e) {
@@ -295,47 +314,50 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		}
 
 		public void keyPressed(KeyEvent ke){
-			int x = src.getXVal();
-			int y = src.getYVal();
-			prev_x = x;
-			prev_y = y;
-			switch(ke.getKeyCode()){
-				case KeyEvent.VK_DOWN:
-					y += y_speed;
-					position = "Down";
-					break;
-				case KeyEvent.VK_UP:
-					y -= y_speed;
-					position = "Up";
-					break;
-				case KeyEvent.VK_LEFT:
-					x -= x_speed;
-					position = "Left";
-					break;
-				case KeyEvent.VK_RIGHT:
-					x += x_speed;
-					position = "Right";					
-					break;
-				case KeyEvent.VK_SPACE:
-					send("MISSILE "
-						+ player_name + " "
-						+ x + " "
-						+ y + " "
-						+ position + "wards"
+			if(!src.isDead()){
+				int x = src.getXVal();
+				int y = src.getYVal();
+				prev_x = x;
+				prev_y = y;
+				switch(ke.getKeyCode()){
+					case KeyEvent.VK_DOWN:
+						y += y_speed;
+						position = "Down";
+						break;
+					case KeyEvent.VK_UP:
+						y -= y_speed;
+						position = "Up";
+						break;
+					case KeyEvent.VK_LEFT:
+						x -= x_speed;
+						position = "Left";
+						break;
+					case KeyEvent.VK_RIGHT:
+						x += x_speed;
+						position = "Right";					
+						break;
+					case KeyEvent.VK_SPACE:
+						send("MISSILE "
+							+ player_name + " "
+							+ x + " "
+							+ y + " "
+							+ position + "wards"
+						);
+						break;
+					case KeyEvent.VK_ENTER:
+						chatPanel.setFocus();
+						break;
+				}
+				if (prev_x != x || prev_y != y){
+					send("PLAYER " 
+						+ player_name + " " 
+						+ x + " " 
+						+ y + " " 
+						+ position
 					);
-					break;
-				case KeyEvent.VK_ENTER:
-					chatPanel.setFocus();
-					break;
+				}
 			}
-			if (prev_x != x || prev_y != y){
-				send("PLAYER " 
-					+ player_name + " " 
-					+ x + " " 
-					+ y + " " 
-					+ position
-				);
-			}
+			
 		}
 	}
 

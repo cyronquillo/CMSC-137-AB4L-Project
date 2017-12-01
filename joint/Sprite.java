@@ -14,7 +14,9 @@ public class Sprite implements Runnable{
 	private GhostWarsServer broadcaster;
 	private GameState game;
 	private Thread t;
+	private boolean is_dead;
 	public Sprite(String name, InetAddress ip, int port, int ith, GhostWarsServer broadcaster, GameState game, int x, int y){
+		this.is_dead = false;
 		this.broadcaster = broadcaster;
 		this.game = game;
 		this.ip = ip;
@@ -89,10 +91,19 @@ public class Sprite implements Runnable{
 		String return_string = "PLAYER " + name + " "
 							 + x + " "
 							 + y + " "
-							 + state;
+							 + state + " "
+							 + is_dead;
+
 		return return_string;
 	}
 
+	public boolean isDead(){
+		return this.is_dead;
+	}
+	public void collisionResponse(){
+		this.state = "SpriteRIP";
+		this.is_dead = true;
+	}
 	public void run(){
 		while(true){
 			try{
