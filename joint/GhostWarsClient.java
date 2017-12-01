@@ -1,4 +1,4 @@
-package instantiation;
+
 
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
@@ -24,6 +24,7 @@ import java.awt.*;
 public class GhostWarsClient extends JPanel implements Runnable, Constants{
 	private JFrame frame;
 	private ChatAccess access;
+	private ChatPanel chatPanel;
 	private int x,y,x_speed,y_speed, prev_x, prev_y;
 	private Thread t;
 	private String player_name;
@@ -59,7 +60,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 		} catch(Exception e){}
 
 		frame.setLayout(new BorderLayout());
-		JPanel chatPanel = new ChatPanel(access);
+		chatPanel = new ChatPanel(access);
 		frame.add(chatPanel, BorderLayout.WEST);
 		frame.add(this, BorderLayout.CENTER);
 		this.setFocusable(true);
@@ -236,6 +237,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
 						+ position + "wards"
 					);
 					break;
+				case KeyEvent.VK_C:
+					chatPanel.requestFocus();
+					break;
 			}
 			if (prev_x != x || prev_y != y){
 				send("PLAYER " 
@@ -262,7 +266,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants{
            	
 
             try {
-                access.InitSocket(server,PORT);
+                access.InitSocket(server,PORT, name);
                 game.begin();
             } catch (IOException ex) {
                 System.out.println("Cannot connect to " + server + ":" + PORT);

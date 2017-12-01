@@ -1,4 +1,4 @@
-package instantiation;
+
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.PrintStream;
@@ -18,7 +18,7 @@ public class ClientThread extends Thread{
 		try{
 			input = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
 			output = new PrintStream(cSocket.getOutputStream());
-			String usr = cSocket.getRemoteSocketAddress().toString();
+			String usr = input.readLine();
 
 
 			//notify other clients that a new client has entered

@@ -1,4 +1,4 @@
-package instantiation;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +27,7 @@ public class ChatAccess extends Observable {
     }
 
     // Creates socket and receiving thread
-    public void InitSocket(String server, int port) throws IOException {
+    public void InitSocket(String server, int port, String username) throws IOException {
         socket = new Socket(server, port);
         output = socket.getOutputStream();
 
@@ -47,6 +47,8 @@ public class ChatAccess extends Observable {
             }
         };
         receivingThread.start();
+
+        send(username);
     }
 
 
