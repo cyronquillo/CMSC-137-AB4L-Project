@@ -168,7 +168,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 							String src = object[1].trim();
 							int x = Integer.parseInt(object[2]);
 							int y = Integer.parseInt(object[3]);
-							missileArr.put(src, new ClientMissile(src, x, y));
+							boolean is_collided = Boolean.parseBoolean(object[4]);
+
+							missileArr.put(src, new ClientMissile(src, x, y, is_collided));
 							// offscreen.getGraphics().drawString(src + " lol", x, y);
 							// offscreen.getGraphics().fillOval(x, y, 10, 10);
 						}
@@ -213,11 +215,14 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 			g.setColor(curr);
     	}
     	for(String key: missileArr.keySet()){
-    		Color curr = g.getColor();
-    		String color = csHash.get(missileArr.get(key).src).color;
-    		g.setColor(this.getColor(color));
-			g.fillOval(missileArr.get(key).x, missileArr.get(key).y, 10, 10);
-    		g.setColor(curr);
+    		if(missileArr.get(key).is_collided == NOT_COLLIDED){
+    			Color curr = g.getColor();
+    			String color = csHash.get(missileArr.get(key).src).color;
+    			g.setColor(this.getColor(color));
+				g.fillOval(missileArr.get(key).x, missileArr.get(key).y, BULLET_SIZE, BULLET_SIZE);
+    			g.setColor(curr);
+    			
+    		}
     	}
 		// g.drawImage( offscreenMissile, 10,10, null);
 	}

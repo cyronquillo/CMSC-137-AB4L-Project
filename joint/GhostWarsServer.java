@@ -136,9 +136,9 @@ public class GhostWarsServer implements Runnable, Constants {
   						String position = sprite_state[4].trim();
   						Sprite sprite = game.getPlayers().get(name);
 
+
   						// sprite-to-sprite collision detection
   						HashMap<String, Sprite> playerList = game.getPlayers();
-
   						boolean do_update = true;
   						for(String key: playerList.keySet()){
   							Sprite sprite2 = playerList.get(key);
@@ -150,24 +150,18 @@ public class GhostWarsServer implements Runnable, Constants {
 	  							break;
 	  						}	
   						}
+
+  						//	block-to-sprite collision detection
+  						if(colDect.checkCollision(sprite, x, y, game.map.getTileMap().getMap())== HAS_COLLIDED){
+							do_update = false;
+  						}
+
   						if(do_update){
   							sprite.setX(x);
   							sprite.setY(y);
   						} else{
   							int prev_x = sprite.getX();
   							int prev_y = sprite.getY();
-  							// if(x - prev_x > 0){
-  							// 	sprite.setX(x - 5);
-  							// }
-  							// if(x - prev_x < 0){
-  							// 	sprite.setX(x + 5);
-  							// }
-  							// if(y - prev_y > 0){
-  							// 	sprite.setY(y - 5);
-  							// }
-  							// if(y - prev_y < 0){
-  							// 	sprite.setY(y + 5);
-  							// }
   							sprite.setX(prev_x);
   							sprite.setY(prev_y);
   						}
@@ -183,7 +177,7 @@ public class GhostWarsServer implements Runnable, Constants {
   						int x = Integer.parseInt(missile_state[2].trim());
   						int y = Integer.parseInt(missile_state[3].trim());
   						String position = missile_state[4].trim();
-
+  						
   						ArrayList<Missile> mi = game.getMissiles();
   						boolean zero_ammo = false;
   						for(int i =0; i < mi.size(); i++){

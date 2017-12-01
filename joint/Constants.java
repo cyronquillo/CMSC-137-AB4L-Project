@@ -44,4 +44,7 @@ public interface Constants {
 	//collision
 	public static final boolean HAS_COLLIDED = true;
 	public static final boolean NOT_COLLIDED = false;
+
+	//bullet
+	public static final int BULLET_SIZE = 10;
 }

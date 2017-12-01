@@ -1,5 +1,6 @@
 package instantiation;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Missile extends Thread implements Constants{
 	private int x;
@@ -53,25 +54,59 @@ public class Missile extends Thread implements Constants{
 	public String toString(){
 		String return_string = "MISSILE " + this.src + " "
 							 + this.x + " "
-							 + this.y;
+							 + this.y + " "
+							 + this.is_collided;
 		return return_string;
 	}
 
 	public String getSource(){
 		return this.src;
 	}
+
+	public void setCollided(boolean collide){
+		this.is_collided = collide;
+	}
+
+	public int getX(){
+		return this.x;
+	}
+
+	public int getY(){
+		return this.y;
+	}
 	public void run(){
-		while(this.x > -30 && this.x < FRAME_WIDTH+30 && this.y < FRAME_HEIGHT+30 && this.y > -30 && this.is_collided == false){
+		while(this.is_collided == false){
 			try { 
 				Thread.sleep(4);
 				this.update();
+
+				//sprite collision
+				HashMap<String, Sprite> playerList = game.getPlayers();
+				for(String key: playerList.keySet()){
+					Sprite sprite2 = playerList.get(key);
+					if(sprite2.getName().equals(this.getSource())){
+						continue;
+					}
+					if(broadcaster.colDect.checkCollision(this, sprite2) == HAS_COLLIDED){
+						this.setCollided(true);
+						break;
+					}	
+				}
+
+				//block collision
+				if(broadcaster.colDect.checkCollision(this,game.map.getTileMap().getMap())== HAS_COLLIDED){
+					this.setCollided(true);
+				}
+
+
+
 				broadcaster.broadcast(game.toString());
 			} catch(Exception e){}
 
 		}
-		this.is_collided = true;
-		System.out.println("hit");
 		storage.remove(this);
+		broadcaster.broadcast(game.toString());
+
 	}
 
 
