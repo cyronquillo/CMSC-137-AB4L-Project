@@ -14,11 +14,15 @@ import java.net.Socket;
 import java.util.Observable;
 import java.util.Observer;
 
+import java.awt.event.InputEvent;
+import java.awt.Robot;
+
 public class ChatPanel extends JPanel implements Observer {
     private JTextArea chatArea;
     private JTextField chatBox;
     private JButton sendButton;
     private ChatAccess chatAccess;
+    private Robot robot;
 
     public ChatPanel(ChatAccess chatAccess) {
         this.chatAccess = chatAccess;
@@ -51,6 +55,14 @@ public class ChatPanel extends JPanel implements Observer {
                 chatBox.selectAll();
                 chatBox.requestFocus();
                 chatBox.setText("");
+
+                try {
+                    robot = new Robot();
+                    robot.mouseMove(500, 200);
+                    robot.mousePress(InputEvent.BUTTON1_MASK);
+                    robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                }
+                catch(Exception ex) {}
             }
         };
         chatBox.addActionListener(sendButtonListener);

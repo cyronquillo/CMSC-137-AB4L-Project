@@ -284,7 +284,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 						+ position + "wards"
 					);
 					break;
-				case KeyEvent.VK_C:
+				case KeyEvent.VK_ENTER:
 					chatPanel.setFocus();
 					break;
 			}
