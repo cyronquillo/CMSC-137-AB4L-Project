@@ -1,4 +1,4 @@
-
+package instantiation;
 
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
