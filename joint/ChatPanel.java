@@ -58,7 +58,9 @@ public class ChatPanel extends JPanel implements Observer {
 
                 try {
                     robot = new Robot();
-                    robot.mouseMove(500, 200);
+                    int x = (int) chatBox.getLocationOnScreen().getX();
+                    int y = (int) chatBox.getLocationOnScreen().getY();
+                    robot.mouseMove(x+223, y);
                     robot.mousePress(InputEvent.BUTTON1_MASK);
                     robot.mouseRelease(InputEvent.BUTTON1_MASK);
                 }
