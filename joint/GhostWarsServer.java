@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.io.IOException;
 import java.util.Random;												//import statement
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GhostWarsServer implements Runnable, Constants {
 
@@ -20,6 +21,8 @@ public class GhostWarsServer implements Runnable, Constants {
 	int[][] occupance;
 	Random rand;
 
+	CollisionDetection colDect;
+
 	public GhostWarsServer(int client_count){
 		rand = new Random();
 		occupance = new int[client_count][2];
@@ -35,6 +38,7 @@ public class GhostWarsServer implements Runnable, Constants {
 		} catch (Exception e){}
 
 		game = new GameState();
+		colDect = new CollisionDetection(game);
 
 		System.out.println("Game has been launched. Waiting for players.");
 		
@@ -68,7 +72,6 @@ public class GhostWarsServer implements Runnable, Constants {
 
 	public boolean is_occupied(int x, int y){
 		for(int i = 0; i < curr_client_count; i++){
-			System.out.println("hala pumasok");
 			if(occupance[curr_client_count][0] == x && 
 				occupance[curr_client_count][1] == y)
 					return true;
@@ -101,6 +104,7 @@ public class GhostWarsServer implements Runnable, Constants {
 							(game.map.getTileMap().getMap())[y][x] != TILE_FLOOR);
 						occupance[curr_client_count][0] = x;
 						occupance[curr_client_count][1] = y;
+						System.out.println(x + " " + y);
 						x = (x * FRAME_WIDTH / 20);
 						y = (y * FRAME_HEIGHT / 15);
 						Sprite sprite = new Sprite(name, packet.getAddress(), packet.getPort(), curr_client_count, this, game, x, y);
@@ -131,11 +135,45 @@ public class GhostWarsServer implements Runnable, Constants {
   						int y = Integer.parseInt(sprite_state[3].trim());
   						String position = sprite_state[4].trim();
   						Sprite sprite = game.getPlayers().get(name);
-  						sprite.setX(x);
-  						sprite.setY(y);
-  						sprite.setState(sprite.getColor() + "." + position);
 
-  						game.update(name, sprite);
+  						// sprite-to-sprite collision detection
+  						HashMap<String, Sprite> playerList = game.getPlayers();
+
+  						boolean do_update = true;
+  						for(String key: playerList.keySet()){
+  							Sprite sprite2 = playerList.get(key);
+  							if(sprite2.getName().equals(sprite.getName())){
+  								continue;
+  							}
+	  						if(colDect.checkCollision(sprite, x, y, sprite2 ) == HAS_COLLIDED){
+	  							do_update = false;
+	  							break;
+	  						}	
+  						}
+  						if(do_update){
+  							sprite.setX(x);
+  							sprite.setY(y);
+  						} else{
+  							int prev_x = sprite.getX();
+  							int prev_y = sprite.getY();
+  							// if(x - prev_x > 0){
+  							// 	sprite.setX(x - 5);
+  							// }
+  							// if(x - prev_x < 0){
+  							// 	sprite.setX(x + 5);
+  							// }
+  							// if(y - prev_y > 0){
+  							// 	sprite.setY(y - 5);
+  							// }
+  							// if(y - prev_y < 0){
+  							// 	sprite.setY(y + 5);
+  							// }
+  							sprite.setX(prev_x);
+  							sprite.setY(prev_y);
+  						}
+						sprite.setState(sprite.getColor() + "." + position);
+						game.update(name, sprite);
+
 
   						// broadcast(game.toString());
   					}

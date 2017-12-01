@@ -96,7 +96,7 @@ public class Sprite implements Runnable{
 	public void run(){
 		while(true){
 			try{
-				Thread.sleep(5);
+				Thread.sleep(3);
 			} catch(Exception e){}
 			if(prev_x != x || prev_y != y){
 				prev_x = x;

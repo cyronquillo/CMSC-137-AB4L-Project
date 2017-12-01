@@ -10,7 +10,7 @@ public interface Constants {
 	public final int WAITING_FOR_PLAYERS = 3;
 
 	//port
-	public static final int PORT = 8889;
+	public static final int PORT = 8888;
 
 
 	//premade image library
@@ -41,5 +41,7 @@ public interface Constants {
 	public static final String HORIZONTAL = "horizontal";
 	public static final String VERTICAL = "vertical";
 
-	
+	//collision
+	public static final boolean HAS_COLLIDED = true;
+	public static final boolean NOT_COLLIDED = false;
 }

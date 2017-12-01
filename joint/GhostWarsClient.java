@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private JFrame frame;
 	private ChatPanel chatPanel;
-	private int x,y,x_speed,y_speed, prev_x, prev_y;
+	private int x_speed,y_speed, prev_x, prev_y,x,y;
 	private Thread t;
 	private String player_name;
 	private String server_ip;
@@ -40,6 +40,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	public HashMap<String, ClientSprite> csHash;
 	public HashMap<String, ClientMissile> missileArr;
 	private int map[][];
+	private KeyHandler kh;
 
 	public GhostWarsClient(String server_ip, String player_name){
 		super();
@@ -70,7 +71,8 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		frame.add(chatPanel, BorderLayout.WEST);
 		frame.add(this, BorderLayout.CENTER);
 		this.setFocusable(true);
-		frame.addKeyListener(new KeyHandler());
+		kh = new KeyHandler(this);
+		frame.addKeyListener(kh);
 		frame.addMouseListener(new MouseAction());
 		// this.add(new JLabel("GG!"));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -151,6 +153,10 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 							String name = object[1].trim();
 							int x = Integer.parseInt(object[2]);
 							int y = Integer.parseInt(object[3]);
+							if(this.player_name.equals(name)){
+								this.x = x;
+								this.y = y;
+							}
 							String state = object[4].trim();
 							String[] temp = state.split("\\.");
 							String color = temp[0];
@@ -257,7 +263,12 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
     	}
     	return color;
     }
-
+    public int getXVal(){
+    	return this.x;
+    }
+    public int getYVal(){
+    	return this.y;
+    }
     class MouseAction implements MouseListener{
 		public void mousePressed(MouseEvent e) {
 			frame.requestFocus();
@@ -273,7 +284,14 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	}
 
 	class KeyHandler extends KeyAdapter{
+		GhostWarsClient src;
+		public KeyHandler(GhostWarsClient src){
+			this.src = src;
+		}
+
 		public void keyPressed(KeyEvent ke){
+			int x = src.getXVal();
+			int y = src.getYVal();
 			prev_x = x;
 			prev_y = y;
 			switch(ke.getKeyCode()){
