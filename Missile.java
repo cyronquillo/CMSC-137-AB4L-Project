@@ -84,7 +84,7 @@ public class Missile extends Thread implements Constants{
 				HashMap<String, Sprite> playerList = game.getPlayers();
 				for(String key: playerList.keySet()){
 					Sprite sprite2 = playerList.get(key);
-					if(sprite2.getName().equals(this.getSource())){
+					if(sprite2.getName().equals(this.getSource()) || sprite2.isDead() == IS_DEAD){
 						continue;
 					}
 					if(broadcaster.colDect.checkCollision(this, sprite2) == HAS_COLLIDED){
