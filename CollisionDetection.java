@@ -109,7 +109,6 @@ public class CollisionDetection implements Constants{
 											map[i][j] == STEELEST_BLOCK ||
 												map[i][j] == STEELER_BLOCK ||
 													map[i][j] == STEEL_BLOCK){
-					Rectangle blockRect = getBounds(j * 40, i * 40, BLOCK_SIZE);
 					if(sp1Rect.intersects(blockRect)){
 						return HAS_COLLIDED;
 					}
