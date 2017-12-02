@@ -27,15 +27,13 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private JFrame frame;
 	private ChatPanel chatPanel;
 	private StatPanel statPanel;
-	private int x_speed,y_speed, prev_x, prev_y,x,y;
+	private int prev_x, prev_y,x,y;
 	private Thread t;
 	private String player_name;
 	private String server_ip;
 	private boolean is_connected;
 	private DatagramSocket socket;
 	private String server_data;
-	private BufferedImage offscreen;
-	private BufferedImage offscreenMissile;
 	private String position;
 	public ChatAccess access;
 	public HashMap<String, ClientSprite> csHash;
@@ -46,6 +44,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private int bullet_size;
 	private int life;
 	private int health;
+	private int speed;
 
 	public GhostWarsClient(String server_ip, String player_name){
 		super();
@@ -61,9 +60,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 
 		this.health = INIT_HEALTH;
 		this.life = INIT_LIFE;
-		
-		this.x_speed = 5;
-		this.y_speed = 5;
+		this.speed = NORMAL_SPEED;
 
 
 		this.is_connected = false;
@@ -156,7 +153,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					send("CONNECT " + player_name);
 				}
 			} else {
-				// frame.setVisible(true);
 				if(server_data.startsWith("PLAYER")){
 					String[] objects = server_data.split(":");
 					for(int i = 0; i < objects.length; i++){
@@ -173,6 +169,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 							int size = Integer.parseInt(object[6]);
 							int life = Integer.parseInt(object[7]);
 							int health = Integer.parseInt(object[8]);
+							int speed = Integer.parseInt(object[9]);
 							if(is_dead){
 								img = gfx.returnImage(state);
 								color = "white";
@@ -190,6 +187,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 								this.bullet_size = size;
 								this.life = life;
 								this.health = health;
+								this.speed = speed;
 							}
 							ClientSprite spr = new ClientSprite(name, x, y, color, position, img);
 							csHash.put(name,spr);
@@ -252,6 +250,12 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 				 	img = gfx.returnImage(VERTICAL_UP);
 				} else if(this.map[i][j] == VERTICAL_DOWN_BORDER){
 					img = gfx.returnImage(VERTICAL_DOWN);
+				} else if(this.map[i][j] == HEALTH_UP){
+					img = gfx.returnImage(HEALTH);
+				} else if(this.map[i][j] == SPEED_UP){
+					img = gfx.returnImage(SPEED);
+				} else if(this.map[i][j] == DAMAGE_UP){
+					img = gfx.returnImage(DAMAGE);
 				}
 				g.drawImage(img,j*40,i*40, BLOCK_SIZE, BLOCK_SIZE, null);
 			}
@@ -367,40 +371,40 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 
 				switch(ke.getKeyCode()){
 					case KeyEvent.VK_DOWN:
-						y += y_speed;
+						y += speed;
 						position = "Down";
 						moveDown = true;
 						break;
 					case KeyEvent.VK_UP:
-						y -= y_speed;
+						y -= speed;
 						position = "Up";
 						moveUp = true;
 						break;
 					case KeyEvent.VK_LEFT:
-						x -= x_speed;
+						x -= speed;
 						position = "Left";
 						moveLeft = true;
 						break;
 					case KeyEvent.VK_RIGHT:
-						x += x_speed;
+						x += speed;
 						position = "Right";					
 						moveRight = true;
 						break;
 					case KeyEvent.VK_SPACE:
 						if (moveDown) {
-							y += y_speed;
+							y += speed;
 							position = "Down";
 						}
 						else if (moveUp) {
-							y -= y_speed;
+							y -= speed;
 							position = "Up";
 						}
 						else if (moveLeft) {
-							x -= x_speed;
+							x -= speed;
 							position = "Left";
 						}
 						else if (moveRight) {
-							x += x_speed;
+							x += speed;
 							position = "Right";
 						}
 

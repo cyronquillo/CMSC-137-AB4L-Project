@@ -47,6 +47,10 @@ public interface Constants {
 	public static final int STEEL_BLOCK = 8;
 	public static final int STEELER_BLOCK = 9;
 	public static final int STEELEST_BLOCK = 10;
+	public static final int HEALTH_UP = 11;
+	public static final int SPEED_UP = 12;
+	public static final int DAMAGE_UP = 13;
+
 
 	//blocknames
 	public static final String GROUND = "ground";
@@ -60,6 +64,10 @@ public interface Constants {
 	public static final String STEELEST = "steelest";
 	public static final String STEELER = "steeler";
 	public static final String STEEL = "steel";
+	public static final String HEALTH = "health-up";
+	public static final String DAMAGE = "damage-up";
+	public static final String SPEED = "speed-up";
+
 
 
 	// map unit size
@@ -71,6 +79,12 @@ public interface Constants {
 	public static final boolean NOT_COLLIDED = false;
 
 
+	// sprite speed
+
+	public static final int NORMAL_SPEED = 5;
+	public static final int FAST_SPEED = 10;
+	public static final int FASTER_SPEED = 13;
+	public static final int FASTEST_SPEED = 15;
 	//dead
 	public static final boolean IS_DEAD = true;
 	public static final boolean NOT_DEAD = false;

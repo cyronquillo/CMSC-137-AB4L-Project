@@ -20,9 +20,10 @@ public class Sprite implements Runnable, Constants{
 	private int life;
 	private int health;
 	private Random rand;
+	private int speed;
 	public Sprite(String name, InetAddress ip, int port, int ith, GhostWarsServer broadcaster, GameState game, int x, int y){
 		this.rand = new Random();
-		
+		this.speed = 5;
 		this.is_dead = false;
 		this.broadcaster = broadcaster;
 		this.game = game;
@@ -97,6 +98,10 @@ public class Sprite implements Runnable, Constants{
 		String[] temp = state.split("\\.");
 		this.position = temp[1];
 	}
+
+	public int getBulletSize(){
+		return this.bullet_size;
+	}
 	public String toString(){
 		String return_string = "PLAYER " + name + " "
 							 + x + " "
@@ -105,7 +110,8 @@ public class Sprite implements Runnable, Constants{
 							 + is_dead + " "
 							 + bullet_size + " "
 							 + life + " "
-							 + health;
+							 + health + " "
+							 + speed;
 
 		return return_string;
 	}
@@ -115,7 +121,6 @@ public class Sprite implements Runnable, Constants{
 	}
 
 	public void resurrect(){
-		System.out.println("testing");
 		int new_x,new_y;
 		do{
 			new_x = rand.nextInt(MAP_WIDTH);
@@ -138,27 +143,54 @@ public class Sprite implements Runnable, Constants{
 
 	public void collisionResponse(Missile mi){
 		int damage = mi.getBulletSize();
-		if(damage == 25){
+		if(damage == BIG_BULLET_SIZE){
 			damage = 40;
 		} else{
 			damage = 20;
 		}
-		health = health - damage;
-		if(health <= 0){
-			health = INIT_HEALTH;
-			life = life -1;
-			if(life != 0){
+		this.health = this.health - damage;
+		System.out.println(this.health);
+		if(this.health <= 0){
+			this.health = INIT_HEALTH;
+			this.life = this.life -1;
+			if(this.life != 0){
 				this.resurrect();
+				this.bullet_size = BULLET_SIZE;
+				this.speed = NORMAL_SPEED;
 			} else{
 				this.state = "SpriteRIP";
 				this.is_dead = IS_DEAD;
 			}
 		}
 	}
+
+	public void collisionResponse(int werpa){
+		switch(werpa){
+			case DAMAGE_UP:
+				this.bullet_size = BIG_BULLET_SIZE;
+				break;
+			case HEALTH_UP:
+				this.health = this.health + 40;
+				if(this.health > 100){
+					this.life++;
+					this.health = this.health % 100;
+				}
+				break;
+			case SPEED_UP:
+				if (this.speed == NORMAL_SPEED){
+					this.speed = FAST_SPEED;
+				} else if (this.speed == FAST_SPEED){
+					this.speed = FASTER_SPEED;
+				} else{
+					this.speed = FASTEST_SPEED;
+				}
+				break;
+		}
+	}
 	public void run(){
 		while(true){
 			try{
-				Thread.sleep(3);
+				Thread.sleep(1);
 			} catch(Exception e){}
 			if(prev_x != x || prev_y != y){
 				prev_x = x;

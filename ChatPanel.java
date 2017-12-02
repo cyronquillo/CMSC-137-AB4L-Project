@@ -17,7 +17,7 @@ import java.util.Observer;
 import java.awt.event.InputEvent;
 import java.awt.Robot;
 
-public class ChatPanel extends JPanel implements Observer {
+public class ChatPanel extends JPanel implements Observer, Constants {
     private JTextArea chatArea;
     private JTextField chatBox;
     private JButton sendButton;
@@ -31,7 +31,7 @@ public class ChatPanel extends JPanel implements Observer {
     }
 
     private void buildGUI() {
-        chatArea = new JTextArea(20, 20);
+        chatArea = new JTextArea(21, 20);
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);
 
@@ -42,7 +42,7 @@ public class ChatPanel extends JPanel implements Observer {
         add(new JScrollPane(chatArea), c);
             
         chatBox = new JTextField();
-        chatBox.setPreferredSize(new Dimension(223, 100));
+        chatBox.setPreferredSize(new Dimension(CHAT_PANEL_WIDTH, 100));
         c.gridy = 1;
         add(chatBox, c);
 
@@ -52,15 +52,15 @@ public class ChatPanel extends JPanel implements Observer {
                 String str = chatBox.getText();
                 if (str != null && str.trim().length() > 0)
                     chatAccess.send(str);
-                chatBox.selectAll();
-                chatBox.requestFocus();
-                chatBox.setText("");
+                    chatBox.selectAll();
+                    chatBox.requestFocus();
+                    chatBox.setText("");
 
                 try {
                     robot = new Robot();
                     int x = (int) chatBox.getLocationOnScreen().getX();
                     int y = (int) chatBox.getLocationOnScreen().getY();
-                    robot.mouseMove(x+223, y);
+                    robot.mouseMove(x+CHAT_PANEL_WIDTH, y);
                     robot.mousePress(InputEvent.BUTTON1_MASK);
                     robot.mouseRelease(InputEvent.BUTTON1_MASK);
                 }

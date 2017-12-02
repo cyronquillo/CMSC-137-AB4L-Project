@@ -51,7 +51,12 @@ public class GFXLibrary{
 			gfxList.put("vertical", ImageIO.read(new File("gfx/blocks/vertical.png")));
 			gfxList.put("vertical-up", ImageIO.read(new File("gfx/blocks/vertical-up.png")));
 			gfxList.put("vertical-down", ImageIO.read(new File("gfx/blocks/vertical-down.png")));			
-		
+			
+			//werpa-ups
+			gfxList.put("health-up", ImageIO.read(new File("gfx/werpa/health-up.png")));
+			gfxList.put("damage-up", ImageIO.read(new File("gfx/werpa/damage-up.png")));
+			gfxList.put("speed-up", ImageIO.read(new File("gfx/werpa/speed-up.png")));
+
 		} catch(Exception e){}
 	}
 
