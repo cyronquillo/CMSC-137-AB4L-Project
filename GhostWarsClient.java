@@ -207,6 +207,14 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 
 					}
 					this.repaint();
+				} else if(server_data.startsWith("MAP")){
+					String map[] = server_data.split("\n");
+					for(int i = 0; i < MAP_HEIGHT; i++){
+						String row[] = map[i+1].split(" ");
+						for(int j = 0; j < MAP_WIDTH; j++){
+							this.map[i][j] =  Integer.parseInt(row[j]);
+						}
+					}
 				}
 			} 
 
@@ -230,6 +238,12 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					img = gfx.returnImage(HORIZONTAL);
 				} else if(this.map[i][j] == VERTICAL_BORDER){
 					img = gfx.returnImage(VERTICAL);
+				} else if(this.map[i][j] == STEELEST_BLOCK){
+					img = gfx.returnImage(STEELEST);
+				} else if(this.map[i][j] == STEELER_BLOCK){
+					img = gfx.returnImage(STEELER);
+				} else if(this.map[i][j] == STEEL_BLOCK){
+					img = gfx.returnImage(STEEL);
 				}
 				g.drawImage(img,j*40,i*40, BLOCK_SIZE, BLOCK_SIZE, null);
 			}

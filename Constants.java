@@ -40,12 +40,18 @@ public interface Constants {
 	public static final int TILE_CORNER = 1;	
 	public static final int HORIZONTAL_BORDER = 2;
 	public static final int VERTICAL_BORDER = 3;
+	public static final int STEEL_BLOCK = 4;
+	public static final int STEELER_BLOCK = 5;
+	public static final int STEELEST_BLOCK = 6;
 
 	//blocknames
 	public static final String GROUND = "ground";
 	public static final String CORNER = "corner";
 	public static final String HORIZONTAL = "horizontal";
 	public static final String VERTICAL = "vertical";
+	public static final String STEELEST = "steelest";
+	public static final String STEELER = "steeler";
+	public static final String STEEL = "steel";
 
 
 	// map unit size

@@ -38,7 +38,7 @@ public class GhostWarsServer implements Runnable, Constants {
 		} catch (Exception e){}
 
 		game = new GameState();
-		colDect = new CollisionDetection(game);
+		colDect = new CollisionDetection(game, this);
 
 		System.out.println("Game has been launched. Waiting for players.");
 		

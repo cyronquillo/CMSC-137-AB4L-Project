@@ -44,6 +44,9 @@ public class GFXLibrary{
 			gfxList.put("corner", ImageIO.read(new File("gfx/blocks/corner.png")));			
 			gfxList.put("horizontal", ImageIO.read(new File("gfx/blocks/horizontal.png")));			
 			gfxList.put("vertical", ImageIO.read(new File("gfx/blocks/vertical.png")));			
+			gfxList.put("steel", ImageIO.read(new File("gfx/blocks/steel.png")));			
+			gfxList.put("steeler", ImageIO.read(new File("gfx/blocks/steeler.png")));			
+			gfxList.put("steelest", ImageIO.read(new File("gfx/blocks/steelest.png")));			
 		
 		} catch(Exception e){}
 	}
