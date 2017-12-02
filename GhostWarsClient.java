@@ -78,10 +78,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		frame.setLayout(new BorderLayout());
 		chatPanel = new ChatPanel(access);
 		statPanel = new StatPanel();
-		JScrollPane scrollStatePanel = new JScrollPane(chatPanel);
 		frame.add(chatPanel, BorderLayout.WEST);
 		frame.add(this, BorderLayout.CENTER);
-		frame.add(scrollStatPanel, BorderLayout.EAST);
+		frame.add(statPanel, BorderLayout.EAST);
 		this.setFocusable(true);
 		kh = new KeyHandler(this);
 		frame.addKeyListener(kh);
