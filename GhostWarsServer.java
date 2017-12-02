@@ -98,15 +98,15 @@ public class GhostWarsServer implements Runnable, Constants {
 						String data_tokens[] = player_data.split(" ");
 						String name = data_tokens[1].trim();
 						do{
-							x = rand.nextInt(20);
-							y = rand.nextInt(15);
+							x = rand.nextInt(MAP_WIDTH);
+							y = rand.nextInt(MAP_HEIGHT);
 						}while((is_occupied(x,y)) || 
 							(game.map.getTileMap().getMap())[y][x] != TILE_FLOOR);
 						occupance[curr_client_count][0] = x;
 						occupance[curr_client_count][1] = y;
 						System.out.println(x + " " + y);
-						x = (x * FRAME_WIDTH / 20);
-						y = (y * FRAME_HEIGHT / 15);
+						x = (x * FRAME_WIDTH / MAP_WIDTH);
+						y = (y * FRAME_HEIGHT / MAP_HEIGHT);
 						Sprite sprite = new Sprite(name, packet.getAddress(), packet.getPort(), curr_client_count, this, game, x, y);
 						curr_client_count++;
 						game.update(name, sprite);
@@ -142,7 +142,7 @@ public class GhostWarsServer implements Runnable, Constants {
   						boolean do_update = true;
   						for(String key: playerList.keySet()){
   							Sprite sprite2 = playerList.get(key);
-  							if(sprite2.getName().equals(sprite.getName())){
+  							if(sprite2.getName().equals(sprite.getName()) || sprite2.isDead() == IS_DEAD){
   								continue;
   							}
 	  						if(colDect.checkCollision(sprite, x, y, sprite2 ) == HAS_COLLIDED){

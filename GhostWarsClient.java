@@ -389,6 +389,12 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 						+ position
 					);
 				}
+			} else{
+				switch(ke.getKeyCode()){
+					case KeyEvent.VK_ENTER:
+						chatPanel.setFocus();
+						break;	
+				}
 			}
 			
 		}
