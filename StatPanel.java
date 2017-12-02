@@ -19,12 +19,21 @@ public class StatPanel extends JPanel implements Observer, Constants{
 	private void buildGUI() {
 		scrollPanel = new JPanel();
 		scrollPanel.setSize(new Dimension(STAT_PANEL_WIDTH-20, STAT_PANEL_HEIGHT-20));
+		scrollPanel.setLayout( new BoxLayout( scrollPanel, BoxLayout.Y_AXIS ) );
 		scrollPane = new JScrollPane(scrollPanel);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);	
-			textArea = new JTextArea(20, 20);
+			textArea = new JTextArea(20,20);
 			scrollPanel.add(textArea);
-		add(scrollPane, BorderLayout.EAST);	
+			JTextArea a1 = new JTextArea(20,20);
+			scrollPanel.add(a1);
+			JTextArea a2 = new JTextArea(20,20);
+			scrollPanel.add(a2);
+			JTextArea a3 = new JTextArea(20,20);
+			scrollPanel.add(a3);
+			JTextArea a4 = new JTextArea(20,20);
+			scrollPanel.add(a4);
+		add(scrollPane, BorderLayout.CENTER);	
 
 	}
 
