@@ -21,11 +21,11 @@ public interface Constants {
 	public static final int FRAME_HEIGHT = 600;
 
 	//chatPanel
-	public static final int CHAT_PANEL_WIDTH = 223;
+	public static final int CHAT_PANEL_WIDTH = 250;
 	public static final int CHAT_PANEL_HEIGHT = 600;
 
 	//statPanel
-	public static final int STAT_PANEL_WIDTH = 223;
+	public static final int STAT_PANEL_WIDTH = 250;
 	public static final int STAT_PANEL_HEIGHT = 600;
 
 	//delimiter
