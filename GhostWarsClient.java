@@ -262,7 +262,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		}
     	for(String key: csHash.keySet()){
     		ClientSprite csp = csHash.get(key);
-		 	g.drawImage(csp.img, csp.x, csp.y, BLOCK_SIZE, BLOCK_SIZE, null);
+		 	g.drawImage(csp.img, csp.x, csp.y, SPRITE_SIZE, SPRITE_SIZE, null);
 			Color curr = g.getColor();
 			g.setColor(this.getColor(csp.color));
 			g.drawString(csp.name, csp.x, csp.y);

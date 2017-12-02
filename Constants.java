@@ -36,6 +36,7 @@ public interface Constants {
 
 	//blocks
 	public static final int BLOCK_SIZE = 40;
+	public static final int SPRITE_SIZE = 32;
 	public static final int TILE_FLOOR = 0;
 	public static final int TILE_CORNER = 1;	
 	public static final int HORIZONTAL_BORDER = 2;

@@ -20,12 +20,13 @@ public class Missile extends Thread implements Constants{
 		this.broadcaster = broadcaster;
 		this.speed = 1;
 		this.is_collided = false;
-		this.x = x + 15;
-		this.y = y + 15;
+		this.bullet_size = size;
+		int adjustment = this.bullet_size == BULLET_SIZE? 5:12;
+		this.x = x + (SPRITE_SIZE/2) - adjustment;
+		this.y = y + (SPRITE_SIZE/2) - adjustment;
 		this.src = src;
 		this.direction = direction;
 		this.storage = storage;
-		this.bullet_size = size;
 		switch(direction){
 			case "Upwards":
 				this.y_inc = -speed;
