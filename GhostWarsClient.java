@@ -26,6 +26,7 @@ import java.util.ArrayList;
 public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private JFrame frame;
 	private ChatPanel chatPanel;
+	private StatPanel statPanel;
 	private int x_speed,y_speed, prev_x, prev_y,x,y;
 	private Thread t;
 	private String player_name;
@@ -42,6 +43,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private int map[][];
 	private KeyHandler kh;
 	private Boolean is_dead;
+
 	public GhostWarsClient(String server_ip, String player_name){
 		super();
 		this.is_dead = false;
@@ -69,15 +71,18 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 
 		frame.setLayout(new BorderLayout());
 		chatPanel = new ChatPanel(access);
+		statPanel = new StatPanel();
 		frame.add(chatPanel, BorderLayout.WEST);
 		frame.add(this, BorderLayout.CENTER);
+		frame.add(statPanel, BorderLayout.EAST);
 		this.setFocusable(true);
 		kh = new KeyHandler(this);
 		frame.addKeyListener(kh);
 		frame.addMouseListener(new MouseAction());
 		// this.add(new JLabel("GG!"));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(223+FRAME_WIDTH, FRAME_HEIGHT);
+		frame.setSize(CHAT_PANEL_WIDTH+FRAME_WIDTH+STAT_PANEL_WIDTH, FRAME_HEIGHT);
+		frame.setResizable(false);
 		frame.setVisible(true);
 	}
 
