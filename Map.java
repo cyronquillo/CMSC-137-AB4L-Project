@@ -12,7 +12,7 @@ public class Map{
 	public static String randomMap(){							//returns a random integer from 1 to 6
 		String map = "";
 		Random rand = new Random();
-		int generated = rand.nextInt(1)+1;
+		int generated = rand.nextInt(6)+1;
 
 		switch(generated){
 			case 1:
@@ -35,7 +35,7 @@ public class Map{
 				break;
 		}
 
-		return "map/terrain1.txt";										//returns a String based from which generated int from the Random Generators
+		return map;										//returns a String based from which generated int from the Random Generators
 	}
 
 	public TileMap getTileMap(){

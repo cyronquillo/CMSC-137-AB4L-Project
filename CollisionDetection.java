@@ -100,15 +100,16 @@ public class CollisionDetection implements Constants{
 			for(int j = 0; j < MAP_WIDTH; j++){
 				Rectangle blockRect = getBounds(j * 40, i * 40, BLOCK_SIZE);
 				if(map[i][j] == TILE_CORNER || 
-					map[i][j] == HORIZONTAL_BORDER || 
-						map[i][j] == VERTICAL_BORDER ||
+					map[i][j] == HORIZONTAL_BORDER ||
 						map[i][j] == HORIZONTAL_LEFT_BORDER ||
-							map[i][j] ==  HORIZONTAL_RIGHT_BORDER ||
-								map[i][j] ==  VERTICAL_UP_BORDER || 
-									map[i][j] ==  VERTICAL_DOWN_BORDER ||
-										map[i][j] == STEELEST_BLOCK ||
-											map[i][j] == STEELER_BLOCK ||
-												map[i][j] == STEEL_BLOCK){
+							map[i][j] == HORIZONTAL_RIGHT_BORDER || 
+								map[i][j] == VERTICAL_BORDER ||
+									map[i][j] == VERTICAL_UP_BORDER ||	
+										map[i][j] == VERTICAL_DOWN_BORDER ||
+											map[i][j] == STEELEST_BLOCK ||
+												map[i][j] == STEELER_BLOCK ||
+													map[i][j] == STEEL_BLOCK){
+					Rectangle blockRect = getBounds(j * 40, i * 40, BLOCK_SIZE);
 					if(sp1Rect.intersects(blockRect)){
 						return HAS_COLLIDED;
 					}
@@ -167,11 +168,11 @@ public class CollisionDetection implements Constants{
 			for(int j = 0; j < MAP_WIDTH; j++){
 				Rectangle blockRect = getBounds(j * 40, i * 40, BLOCK_SIZE);
 				if(map[i][j] == TILE_CORNER || 
-					map[i][j] == HORIZONTAL_BORDER || 
-						map[i][j] == VERTICAL_BORDER ||
-							map[i][j] == HORIZONTAL_LEFT_BORDER ||
-								map[i][j] == HORIZONTAL_RIGHT_BORDER ||
-									map[i][j] == VERTICAL_UP_BORDER ||
+					map[i][j] == HORIZONTAL_BORDER ||
+						map[i][j] == HORIZONTAL_LEFT_BORDER ||
+							map[i][j] == HORIZONTAL_RIGHT_BORDER || 
+								map[i][j] == VERTICAL_BORDER ||
+									map[i][j] == VERTICAL_UP_BORDER ||	
 										map[i][j] == VERTICAL_DOWN_BORDER){
 					if(miRect.intersects(blockRect)){
 						mi.setCollided(HAS_COLLIDED);
