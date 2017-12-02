@@ -26,7 +26,7 @@ In the Client side:
 ```
 ## Conventions
 --------------------
-1. Always use camelCase for functions and snake case for variables 
+1. Always use camelCase for functions and snake_case for variables 
 
 
 2. Use 4-space tabs for indentation
