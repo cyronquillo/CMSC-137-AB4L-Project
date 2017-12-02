@@ -44,6 +44,8 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private KeyHandler kh;
 	private Boolean is_dead;
 	private int bullet_size;
+	private int life;
+	private int health;
 
 	public GhostWarsClient(String server_ip, String player_name){
 		super();
@@ -57,6 +59,8 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		this.bullet_size = BULLET_SIZE;
 		Random rand = new Random();
 
+		this.health = INIT_HEALTH;
+		this.life = INIT_LIFE;
 		
 		this.x_speed = 5;
 		this.y_speed = 5;
@@ -140,13 +144,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					this.x = Integer.parseInt(object[3]);
 					this.y = Integer.parseInt(object[4]);
 					String color = getSpriteColor(col);
-
-
-					/*TESTING START*/
-					if(color.equals("blue")){
-						this.bullet_size = BIG_BULLET_SIZE;
-					}
-					/*TESTING END*/
 					Image img = gfx.returnImage(color + position);
 					ClientSprite spr = new ClientSprite(object[1].trim(), x, y, color, this.position, img);
 					csHash.put(object[1].trim(),spr);
@@ -173,6 +170,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 							String color = "";
 							String state = object[4].trim();
 							Boolean is_dead = Boolean.parseBoolean(object[5]);
+							int size = Integer.parseInt(object[6]);
+							int life = Integer.parseInt(object[7]);
+							int health = Integer.parseInt(object[8]);
 							if(is_dead){
 								img = gfx.returnImage(state);
 								color = "white";
@@ -187,6 +187,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 								this.x = x;
 								this.y = y;
 								this.is_dead = is_dead;
+								this.bullet_size = size;
+								this.life = life;
+								this.health = health;
 							}
 							ClientSprite spr = new ClientSprite(name, x, y, color, position, img);
 							csHash.put(name,spr);
@@ -204,8 +207,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 
 					}
 					this.repaint();
-				}else if(server_data.startsWith("MISSILE")){
-					System.out.println("posible ba to?");
 				}
 			} 
 

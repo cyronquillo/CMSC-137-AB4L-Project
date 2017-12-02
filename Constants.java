@@ -64,4 +64,9 @@ public interface Constants {
 	//bullet
 	public static final int BULLET_SIZE = 10;
 	public static final int BIG_BULLET_SIZE = 25;
+
+	//sprite init attrs
+	public static final int INIT_LIFE = 3;
+	public static final int INIT_HEALTH = 100;
+
 }

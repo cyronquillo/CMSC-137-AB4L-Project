@@ -45,7 +45,7 @@ public class CollisionDetection implements Constants{
 		Rectangle miRect = getBounds(mi.getX(), mi.getY(), mi.getBulletSize());
 		Rectangle spRect = getBounds(sp.getX(), sp.getY(), BLOCK_SIZE);
 		if(miRect.intersects(spRect)){
-			sp.collisionResponse();
+			sp.collisionResponse(mi);
 			System.out.println("collided");
 			return HAS_COLLIDED;
 		}
