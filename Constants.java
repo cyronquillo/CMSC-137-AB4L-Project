@@ -63,4 +63,5 @@ public interface Constants {
 
 	//bullet
 	public static final int BULLET_SIZE = 10;
+	public static final int BIG_BULLET_SIZE = 25;
 }

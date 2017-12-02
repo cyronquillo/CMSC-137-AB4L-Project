@@ -14,7 +14,8 @@ public class Missile extends Thread implements Constants{
 	private Boolean is_collided;
 	GhostWarsServer broadcaster;
 	GameState game;
-	public Missile(int x, int y, String src, String direction, ArrayList<Missile> storage, GhostWarsServer broadcaster, GameState game){
+	private int bullet_size;
+	public Missile(int x, int y, int size, String src, String direction, ArrayList<Missile> storage, GhostWarsServer broadcaster, GameState game){
 		this.game = game;
 		this.broadcaster = broadcaster;
 		this.speed = 1;
@@ -24,6 +25,7 @@ public class Missile extends Thread implements Constants{
 		this.src = src;
 		this.direction = direction;
 		this.storage = storage;
+		this.bullet_size = size;
 		switch(direction){
 			case "Upwards":
 				this.y_inc = -speed;
@@ -55,7 +57,8 @@ public class Missile extends Thread implements Constants{
 		String return_string = "MISSILE " + this.src + " "
 							 + this.x + " "
 							 + this.y + " "
-							 + this.is_collided;
+							 + this.is_collided + " "
+							 + this.bullet_size;
 		return return_string;
 	}
 
@@ -63,6 +66,9 @@ public class Missile extends Thread implements Constants{
 		return this.src;
 	}
 
+	public int getBulletSize(){
+		return this.bullet_size;
+	}
 	public void setCollided(boolean collide){
 		this.is_collided = collide;
 	}
@@ -96,6 +102,19 @@ public class Missile extends Thread implements Constants{
 				//block collision
 				if(broadcaster.colDect.checkCollision(this,game.map.getTileMap().getMap())== HAS_COLLIDED){
 					this.setCollided(true);
+				}
+
+				//missile to missile collision
+				ArrayList<Missile> missileList = game.getMissiles();
+				for(int i = 0; i < missileList.size(); i++){
+					Missile mi = missileList.get(i);
+					if(mi.getSource().equals(this.getSource())){
+						continue;
+					}
+					if(broadcaster.colDect.checkCollision(this, mi) ==  HAS_COLLIDED){
+						this.setCollided(true);
+					}
+
 				}
 
 

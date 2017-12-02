@@ -177,6 +177,7 @@ public class GhostWarsServer implements Runnable, Constants {
   						int x = Integer.parseInt(missile_state[2].trim());
   						int y = Integer.parseInt(missile_state[3].trim());
   						String position = missile_state[4].trim();
+  						int size = Integer.parseInt(missile_state[5].trim());
   						
   						ArrayList<Missile> mi = game.getMissiles();
   						boolean zero_ammo = false;
@@ -186,7 +187,7 @@ public class GhostWarsServer implements Runnable, Constants {
   							}
   						}
   						if(zero_ammo == false)
-	  						game.addMissile(new Missile(x, y, src, position, game.getMissiles(), this, game));
+	  						game.addMissile(new Missile(x, y, size, src, position, game.getMissiles(), this, game));
   					}
   					// if (game.missileCount() != 0){
   					// 	game.updateMissiles();

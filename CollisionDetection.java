@@ -42,7 +42,7 @@ public class CollisionDetection implements Constants{
 	}
 
 	public boolean checkCollision(Missile mi, Sprite sp){
-		Rectangle miRect = getBounds(mi.getX(), mi.getY(), BULLET_SIZE);
+		Rectangle miRect = getBounds(mi.getX(), mi.getY(), mi.getBulletSize());
 		Rectangle spRect = getBounds(sp.getX(), sp.getY(), BLOCK_SIZE);
 		if(miRect.intersects(spRect)){
 			sp.collisionResponse();
@@ -53,8 +53,28 @@ public class CollisionDetection implements Constants{
 		return NOT_COLLIDED;
 	}
 
+	public boolean checkCollision(Missile mi1, Missile mi2){
+		Rectangle mi1Rect = getBounds(mi1.getX(), mi1.getY(), mi1.getBulletSize());
+		Rectangle mi2Rect = getBounds(mi2.getX(), mi2.getY(), mi2.getBulletSize());
+		if(mi1Rect.intersects(mi2Rect)){
+			if(mi2.getBulletSize() > mi1.getBulletSize()){
+				return HAS_COLLIDED;	
+			} else if( mi2.getBulletSize() < mi1.getBulletSize()){
+				mi2.setCollided(true);
+			} else{
+				mi2.setCollided(true);
+				return HAS_COLLIDED;
+			}
+
+			
+
+		}
+		// System.out.println("NOT COLLIDED");
+		return NOT_COLLIDED;
+	}
+
 	public boolean checkCollision(Missile mi, int[][] map){
-		Rectangle miRect = getBounds(mi.getX(), mi.getY(), BULLET_SIZE);
+		Rectangle miRect = getBounds(mi.getX(), mi.getY(), mi.getBulletSize());
 		for(int i = 0; i < MAP_HEIGHT; i++){
 			for(int j = 0; j < MAP_WIDTH; j++){
 				if(map[i][j] == TILE_CORNER || 

@@ -43,6 +43,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private int map[][];
 	private KeyHandler kh;
 	private Boolean is_dead;
+	private int bullet_size;
 
 	public GhostWarsClient(String server_ip, String player_name){
 		super();
@@ -53,6 +54,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
         csHash = new HashMap<String, ClientSprite>();
 		this.setOpaque(true);
 		this.position = "Up";
+		this.bullet_size = BULLET_SIZE;
 		Random rand = new Random();
 
 		
@@ -138,6 +140,13 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					this.x = Integer.parseInt(object[3]);
 					this.y = Integer.parseInt(object[4]);
 					String color = getSpriteColor(col);
+
+
+					/*TESTING START*/
+					if(color.equals("blue")){
+						this.bullet_size = BIG_BULLET_SIZE;
+					}
+					/*TESTING END*/
 					Image img = gfx.returnImage(color + position);
 					ClientSprite spr = new ClientSprite(object[1].trim(), x, y, color, this.position, img);
 					csHash.put(object[1].trim(),spr);
@@ -186,8 +195,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 							int x = Integer.parseInt(object[2]);
 							int y = Integer.parseInt(object[3]);
 							boolean is_collided = Boolean.parseBoolean(object[4]);
+							int size = Integer.parseInt(object[5]);
 
-							missileArr.put(src, new ClientMissile(src, x, y, is_collided));
+							missileArr.put(src, new ClientMissile(src, x, y, size, is_collided));
 							// offscreen.getGraphics().drawString(src + " lol", x, y);
 							// offscreen.getGraphics().fillOval(x, y, 10, 10);
 						}
@@ -236,7 +246,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
     			Color curr = g.getColor();
     			String color = csHash.get(missileArr.get(key).src).color;
     			g.setColor(this.getColor(color));
-				g.fillOval(missileArr.get(key).x, missileArr.get(key).y, BULLET_SIZE, BULLET_SIZE);
+				g.fillOval(missileArr.get(key).x, missileArr.get(key).y, missileArr.get(key).size, missileArr.get(key).size);
     			g.setColor(curr);
     			
     		}
@@ -294,7 +304,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
     public int getYVal(){
     	return this.y;
     }
-
+    public int getBulletSize(){
+    	return this.bullet_size;
+    }
     public boolean isDead(){
     	return this.is_dead;
     }
@@ -373,7 +385,8 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 							+ player_name + " "
 							+ x + " "
 							+ y + " "
-							+ position + "wards"
+							+ position + "wards "
+							+ src.getBulletSize()
 						);
 						break;
 					case KeyEvent.VK_ENTER:
