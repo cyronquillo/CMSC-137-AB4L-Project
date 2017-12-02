@@ -15,7 +15,7 @@ public class GhostWarsServer implements Runnable, Constants {
 	
 	DatagramSocket server_socket;
 	
-	GameState game;
+	public GameState game;
 	int game_stage;
 	Thread t;
 	int[][] occupance;
@@ -78,6 +78,20 @@ public class GhostWarsServer implements Runnable, Constants {
 		}
 		return false;
 	}
+
+	public boolean spriteCollision(Sprite sprite, int x, int y){
+		HashMap<String, Sprite> playerList = game.getPlayers();
+		for(String key: playerList.keySet()){
+			Sprite sprite2 = playerList.get(key);
+			if(sprite2.getName().equals(sprite.getName()) || sprite2.isDead() == IS_DEAD){
+				continue;
+			}
+			if(colDect.checkCollision(sprite, x, y, sprite2 ) == HAS_COLLIDED){
+				return false;
+			}	
+		}
+		return true;
+	}
 	public void run(){
 		while(true){
 			byte[] buffer = new byte[256];
@@ -137,19 +151,10 @@ public class GhostWarsServer implements Runnable, Constants {
   						Sprite sprite = game.getPlayers().get(name);
 
 
-  						// sprite-to-sprite collision detection
-  						HashMap<String, Sprite> playerList = game.getPlayers();
   						boolean do_update = true;
-  						for(String key: playerList.keySet()){
-  							Sprite sprite2 = playerList.get(key);
-  							if(sprite2.getName().equals(sprite.getName()) || sprite2.isDead() == IS_DEAD){
-  								continue;
-  							}
-	  						if(colDect.checkCollision(sprite, x, y, sprite2 ) == HAS_COLLIDED){
-	  							do_update = false;
-	  							break;
-	  						}	
-  						}
+  						
+  						// sprite-to-sprite collision detection
+  						do_update = spriteCollision(sprite, x, y);
 
   						//	block-to-sprite collision detection
   						if(colDect.checkCollision(sprite, x, y, game.map.getTileMap().getMap())== HAS_COLLIDED){

@@ -1,5 +1,6 @@
 package instantiation;
 import java.net.InetAddress;
+import java.util.Random;
 public class Sprite implements Runnable, Constants{
 	private InetAddress ip;
 	private int port;
@@ -18,7 +19,10 @@ public class Sprite implements Runnable, Constants{
 	private int bullet_size;
 	private int life;
 	private int health;
+	private Random rand;
 	public Sprite(String name, InetAddress ip, int port, int ith, GhostWarsServer broadcaster, GameState game, int x, int y){
+		this.rand = new Random();
+		
 		this.is_dead = false;
 		this.broadcaster = broadcaster;
 		this.game = game;
@@ -109,6 +113,29 @@ public class Sprite implements Runnable, Constants{
 	public boolean isDead(){
 		return this.is_dead;
 	}
+
+	public void resurrect(){
+		System.out.println("testing");
+		int new_x,new_y;
+		do{
+			new_x = rand.nextInt(MAP_WIDTH);
+			new_y = rand.nextInt(MAP_HEIGHT);
+			System.out.println(new_x + " " + new_y);
+			if(broadcaster.game.mapArr[new_y][new_x] != TILE_FLOOR){
+				continue;
+			} else if(!broadcaster.spriteCollision(this,new_x * 40, new_y * 40)){
+				continue;
+			} 
+			break;
+		}while(true);
+		this.prev_x = this.x;
+
+		this.prev_y = this.y;
+		this.x = new_x*40;
+		this.y = new_y*40;
+
+	}
+
 	public void collisionResponse(Missile mi){
 		int damage = mi.getBulletSize();
 		if(damage == 25){
@@ -120,14 +147,13 @@ public class Sprite implements Runnable, Constants{
 		if(health <= 0){
 			health = INIT_HEALTH;
 			life = life -1;
+			if(life != 0){
+				this.resurrect();
+			} else{
+				this.state = "SpriteRIP";
+				this.is_dead = IS_DEAD;
+			}
 		}
-		System.out.println("health: " +this.health);
-		System.out.println("life: " +this.life);
-		if(life == 0){
-			this.state = "SpriteRIP";
-			this.is_dead = IS_DEAD;
-		}
-
 	}
 	public void run(){
 		while(true){

@@ -16,10 +16,8 @@ public class CollisionDetection implements Constants{
 		Rectangle sp1Rect = getBounds(prop_x, prop_y, BLOCK_SIZE);
 		Rectangle sp2Rect = getBounds(sp2.getX(), sp2.getY(), BLOCK_SIZE);
 		if(sp1Rect.intersects(sp2Rect)){
-			System.out.println("collided");
 			return HAS_COLLIDED;
 		}
-		// System.out.println("NOT COLLIDED");
 		return NOT_COLLIDED;
 	}
 
@@ -32,7 +30,6 @@ public class CollisionDetection implements Constants{
 						map[i][j] == VERTICAL_BORDER){
 					Rectangle blockRect = getBounds(j * 40, i * 40, BLOCK_SIZE);
 					if(sp1Rect.intersects(blockRect)){
-						System.out.println("collided");
 						return HAS_COLLIDED;
 					}
 				}
@@ -45,11 +42,10 @@ public class CollisionDetection implements Constants{
 		Rectangle miRect = getBounds(mi.getX(), mi.getY(), mi.getBulletSize());
 		Rectangle spRect = getBounds(sp.getX(), sp.getY(), BLOCK_SIZE);
 		if(miRect.intersects(spRect)){
+			mi.setCollided(true);
 			sp.collisionResponse(mi);
-			System.out.println("collided");
 			return HAS_COLLIDED;
 		}
-		// System.out.println("NOT COLLIDED");
 		return NOT_COLLIDED;
 	}
 
@@ -82,7 +78,6 @@ public class CollisionDetection implements Constants{
 						map[i][j] == VERTICAL_BORDER){
 					Rectangle blockRect = getBounds(j * 40, i * 40, BLOCK_SIZE);
 					if(miRect.intersects(blockRect)){
-						System.out.println("collided");
 						return HAS_COLLIDED;
 					}
 				}
