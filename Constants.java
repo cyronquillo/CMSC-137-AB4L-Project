@@ -40,12 +40,20 @@ public interface Constants {
 	public static final int TILE_CORNER = 1;	
 	public static final int HORIZONTAL_BORDER = 2;
 	public static final int VERTICAL_BORDER = 3;
+	public static final int HORIZONTAL_LEFT_BORDER = 4;
+	public static final int HORIZONTAL_RIGHT_BORDER = 5;
+	public static final int VERTICAL_UP_BORDER = 6;
+	public static final int VERTICAL_DOWN_BORDER = 7;
 
 	//blocknames
 	public static final String GROUND = "ground";
 	public static final String CORNER = "corner";
 	public static final String HORIZONTAL = "horizontal";
+	public static final String HORIZONTAL_LEFT = "horizontal-left";
+	public static final String HORIZONTAL_RIGHT = "horizontal-right";
 	public static final String VERTICAL = "vertical";
+	public static final String VERTICAL_UP = "vertical-up";
+	public static final String VERTICAL_DOWN = "vertical-down";
 
 
 	// map unit size
