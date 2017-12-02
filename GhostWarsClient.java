@@ -86,6 +86,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(CHAT_PANEL_WIDTH+FRAME_WIDTH+STAT_PANEL_WIDTH, FRAME_HEIGHT);
 		frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 
