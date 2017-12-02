@@ -42,11 +42,15 @@ public class GFXLibrary{
 			//blocks
 			gfxList.put("ground", ImageIO.read(new File("gfx/blocks/bcground.png")));			
 			gfxList.put("corner", ImageIO.read(new File("gfx/blocks/corner.png")));			
-			gfxList.put("horizontal", ImageIO.read(new File("gfx/blocks/horizontal.png")));			
-			gfxList.put("vertical", ImageIO.read(new File("gfx/blocks/vertical.png")));			
 			gfxList.put("steel", ImageIO.read(new File("gfx/blocks/steel.png")));			
 			gfxList.put("steeler", ImageIO.read(new File("gfx/blocks/steeler.png")));			
 			gfxList.put("steelest", ImageIO.read(new File("gfx/blocks/steelest.png")));			
+			gfxList.put("horizontal", ImageIO.read(new File("gfx/blocks/horizontal.png")));
+			gfxList.put("horizontal-left", ImageIO.read(new File("gfx/blocks/horizontal-left.png")));
+			gfxList.put("horizontal-right", ImageIO.read(new File("gfx/blocks/horizontal-right.png")));			
+			gfxList.put("vertical", ImageIO.read(new File("gfx/blocks/vertical.png")));
+			gfxList.put("vertical-up", ImageIO.read(new File("gfx/blocks/vertical-up.png")));
+			gfxList.put("vertical-down", ImageIO.read(new File("gfx/blocks/vertical-down.png")));			
 		
 		} catch(Exception e){}
 	}

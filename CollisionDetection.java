@@ -95,7 +95,7 @@ public class CollisionDetection implements Constants{
 				}
 			}
 		}
-		broadcaster.broadcast("MAP\n" + gs.map.getTileMap().toString());
+		broadcaster.broadcast("MAP\n" + gs.mapString());
 		return NOT_COLLIDED;
 	}
 

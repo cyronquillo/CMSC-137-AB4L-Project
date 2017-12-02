@@ -118,14 +118,13 @@ public class GhostWarsServer implements Runnable, Constants {
 							(game.map.getTileMap().getMap())[y][x] != TILE_FLOOR);
 						occupance[curr_client_count][0] = x;
 						occupance[curr_client_count][1] = y;
-						System.out.println(x + " " + y);
 						x = (x * FRAME_WIDTH / MAP_WIDTH);
 						y = (y * FRAME_HEIGHT / MAP_HEIGHT);
 						Sprite sprite = new Sprite(name, packet.getAddress(), packet.getPort(), curr_client_count, this, game, x, y);
 						curr_client_count++;
 						game.update(name, sprite);
 						System.out.println("player " + curr_client_count + " has entered.");
-						broadcast("MAP\n" + game.map.getTileMap().toString());
+						broadcast("MAP\n" + game.mapString());
 						broadcast("CONNECTED " + name + " " + (curr_client_count-1) + " " + x + " " + y);
 						
 

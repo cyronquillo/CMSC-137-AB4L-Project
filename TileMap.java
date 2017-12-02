@@ -23,11 +23,8 @@ public class TileMap implements Constants{
 				String[] tokens = line.split(delimiters);
 				for(int col = 0; col < MAP_WIDTH; col++){
 					map[row][col] = Integer.parseInt(tokens[col]);
-					System.out.print(map[row][col] + " ");
 				}
-				System.out.println();
 			}
-
 		} catch(Exception e){
 			System.out.println(e.getMessage());
 		}
@@ -44,7 +41,9 @@ public class TileMap implements Constants{
 			for(int j = 0; j < MAP_WIDTH; j++){
 				retval += map[i][j] + " ";
 			}
-			retval += "\n";
+			if(i != MAP_HEIGHT-1){
+				retval += "\n";
+			}
 		}
 		return retval;
 	}

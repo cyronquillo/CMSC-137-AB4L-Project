@@ -236,6 +236,10 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					img = gfx.returnImage(CORNER);
 				} else if(this.map[i][j] == HORIZONTAL_BORDER){
 					img = gfx.returnImage(HORIZONTAL);
+				} else if(this.map[i][j] == HORIZONTAL_LEFT_BORDER){
+					img = gfx.returnImage(HORIZONTAL_LEFT);
+				} else if(this.map[i][j] == HORIZONTAL_RIGHT_BORDER){
+					img = gfx.returnImage(HORIZONTAL_RIGHT);
 				} else if(this.map[i][j] == VERTICAL_BORDER){
 					img = gfx.returnImage(VERTICAL);
 				} else if(this.map[i][j] == STEELEST_BLOCK){
@@ -244,6 +248,10 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					img = gfx.returnImage(STEELER);
 				} else if(this.map[i][j] == STEEL_BLOCK){
 					img = gfx.returnImage(STEEL);
+				} else if(this.map[i][j] == VERTICAL_UP_BORDER){
+				 	img = gfx.returnImage(VERTICAL_UP);
+				} else if(this.map[i][j] == VERTICAL_DOWN_BORDER){
+					img = gfx.returnImage(VERTICAL_DOWN);
 				}
 				g.drawImage(img,j*40,i*40, BLOCK_SIZE, BLOCK_SIZE, null);
 			}
