@@ -17,6 +17,9 @@ public interface Constants {
 	public static final GFXLibrary gfx = new GFXLibrary();
 	public static final SFXLibrary sfx = new SFXLibrary();
 
+
+	public static final AudioSource PAUSE_AUDIO = sfx.returnAudio("Pause");
+
 	//frame
 	public static final int FRAME_WIDTH = 1000;
 	public static final int FRAME_HEIGHT = 800;

@@ -34,7 +34,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private WinPanel winPanel;
 	private int prev_x, prev_y,x,y;
 	private Thread t;
-	public String player_name;
 	private String server_ip;
 	private boolean is_connected;
 	private DatagramSocket socket;
@@ -46,10 +45,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private int map[][];
 	private KeyHandler kh;
 	private Boolean is_dead;
-	private int bullet_size;
-	private int life;
-	private int health;
-	private int speed;
 	private boolean is_paused;
 	private boolean is_game_over;
 	private String pauser;
@@ -57,7 +52,16 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private Container c;
 	private String final_data[];
 	
+	// essential sprite details
+	public String player_name;
+	private String color;
+	private int bullet_size;
+	private int life;
+	private int health;
+	private int speed;
 
+
+	
 	public GhostWarsClient(String server_ip, String player_name){
 		super();
 		is_game_over = false;
@@ -88,7 +92,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		winPanel = new WinPanel(new JLabel("Congrats"), this);
 		gamePanel = new JPanel(new BorderLayout());
 		cardPanel = new JPanel(new CardLayout());
-		chatPanel = new ChatPanel(access);
+		chatPanel = new ChatPanel(access, this);
 		statPanel = new StatPanel();
 		gamePanel.add(chatPanel, BorderLayout.WEST);
 		gamePanel.add(this, BorderLayout.CENTER);
@@ -173,6 +177,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					System.out.println("Connected to the server boi!");
 					String name = server_data.split(" ")[1].trim();
 					this.repaint();
+					chatPanel.repaint();
 				} else {
 					System.out.println("Connecting..");
 					send("CONNECT " + player_name);
@@ -180,6 +185,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 			} else {
 				if(server_data.startsWith("START")){
 					is_waiting = false;
+					sfx.returnAudio("Welcome").play(false);	
 					this.repaint();
 				}
 				if(server_data.startsWith("PLAYER")){
@@ -217,6 +223,8 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 								this.life = life;
 								this.health = health;
 								this.speed = speed;
+								this.color = color;
+								chatPanel.repaint();
 							}
 							ClientSprite spr = new ClientSprite(name, x, y, color, position, img);
 							csHash.put(name,spr);
@@ -242,12 +250,15 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					}
 				} else if(server_data.startsWith("AUDIO")) {
 					String aud[] = server_data.split(" ");
-					if(aud[1].equals("Resurrect")){
+					if(aud[1].equals("Resurrect") || aud[1].equals("Lost") ){
 						if(this.player_name.equals(aud[2])){
 							System.out.println("AUDIO RCVD:" + aud[1]);
 							sfx.returnAudio(aud[1].trim()).play(false);	
 						}
-					} else{
+					}else{
+						if(aud[1].equals("Victory") && is_dead == true){
+							continue;
+						}
 						System.out.println("AUDIO RCVD:" + aud[1]);
 						sfx.returnAudio(aud[1].trim()).play(false);
 					}
@@ -256,7 +267,10 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					String pause[] = server_data.split(" ");
 					this.is_paused = Boolean.parseBoolean(pause[1]);
 					if(this.is_paused == PAUSED){
+						PAUSE_AUDIO.play(true);
 						this.pauser = pause[2];
+					} else{
+						PAUSE_AUDIO.stop();
 					}
 					this.repaint();
 				} else if(server_data.startsWith("GAMEOVER")){
@@ -271,8 +285,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 
 	public void paintComponent(Graphics g){
     	super.paintComponent(g);
-    	// g.fillOval(100,100,10,10);
-		// g.drawImage(offscreen, 0, 0, this);
 		g.fillRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 		Image img = null;
 		for(int i = 0; i < MAP_HEIGHT; i++){
@@ -418,14 +430,37 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
     	}
     	return color;
     }
+
+    public String getName(){
+		return this.player_name;
+	}
+
+    public int getBulletSize(){
+    	return this.bullet_size;
+    }
+
+    public int getLife(){
+    	return this.life;
+    }
+
+    public int getHealth(){
+    	return this.health;
+    }
+
+    public String getCurrSpriteColor(){
+    	return this.color;
+    }
+
+    public int getSpeed(){
+    	return this.speed;
+    }
+
+
     public int getXVal(){
     	return this.x;
     }
     public int getYVal(){
     	return this.y;
-    }
-    public int getBulletSize(){
-    	return this.bullet_size;
     }
     public boolean isDead(){
     	return this.is_dead;
