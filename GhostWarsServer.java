@@ -94,6 +94,9 @@ public class GhostWarsServer implements Runnable, Constants {
 	}
 	public void run(){
 		while(true){
+			if(game.getPlayers().size() > 1 && game.winnerExists() == true){
+				break;
+			}
 			byte[] buffer = new byte[256];
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 			try{
@@ -121,6 +124,7 @@ public class GhostWarsServer implements Runnable, Constants {
 						x = (x * FRAME_WIDTH / MAP_WIDTH);
 						y = (y * FRAME_HEIGHT / MAP_HEIGHT);
 						Sprite sprite = new Sprite(name, packet.getAddress(), packet.getPort(), curr_client_count, this, game, x, y);
+						game.addPlayerCount();
 						curr_client_count++;
 						game.update(name, sprite);
 						System.out.println("player " + curr_client_count + " has entered.");

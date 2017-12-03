@@ -49,9 +49,11 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private int speed;
 	private boolean is_paused;
 	private String pauser;
+	private boolean is_waiting;
 
 	public GhostWarsClient(String server_ip, String player_name){
 		super();
+		is_waiting = true;
 		this.is_dead = false;
 		this.map = new int[MAP_HEIGHT][MAP_WIDTH];
         access = new ChatAccess();
@@ -120,7 +122,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 			try { 
 				Thread.sleep(0);
 			} catch(Exception e){}
-
+			
 			byte[] buffer = new byte[1024];
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 			try{
@@ -158,6 +160,10 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					send("CONNECT " + player_name);
 				}
 			} else {
+				if(server_data.startsWith("START")){
+					is_waiting = false;
+					this.repaint();
+				}
 				if(server_data.startsWith("PLAYER")){
 					String[] objects = server_data.split(":");
 					for(int i = 0; i < objects.length; i++){
@@ -240,9 +246,8 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 				}
 
 			} 
-
-
 		}
+		/*SWITCH TO RESULTS PANEL*/
 	}
 
 	public void paintComponent(Graphics g){
@@ -316,22 +321,40 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		
 		// pause drawing
 		if(this.is_paused == PAUSED){
-				System.out.println("dapat nagpprint to");
-    			Color curr = g.getColor();
-				g.setColor(new Color(0,0,0,160));											//paints the panel over by a rectangle when paused
-				g.fillRect(0,0,FRAME_WIDTH,FRAME_HEIGHT);
-				g.drawImage(gfx.returnImage("pause"), 250, 250, 500, 250, null);			//paints the pause image
-		        Font myFont = null;
+			System.out.println("dapat nagpprint to");
+			Color curr = g.getColor();
+			g.setColor(new Color(0,0,0,160));											//paints the panel over by a rectangle when paused
+			g.fillRect(0,0,FRAME_WIDTH,FRAME_HEIGHT);
+			g.drawImage(gfx.returnImage("pause"), 250, 250, 500, 250, null);			//paints the pause image
+	        Font myFont = null;
 
-		        try{
-		        	myFont = Font.createFont(Font.TRUETYPE_FONT, new File("font/PixelDart.ttf"));
-				} catch(Exception e){}
-				Font prev = g.getFont();
-				g.setColor(Color.WHITE);
-				g.setFont(myFont);
-				g.drawString("by: " +this.pauser,1000 - (this.pauser.length() + 4)*40 , 780);
-				g.setColor(curr);
-				g.setFont(prev);	
+	        try{
+	        	myFont = Font.createFont(Font.TRUETYPE_FONT, new File("font/PixelDart.ttf"));
+			} catch(Exception e){}
+			Font prev = g.getFont();
+			g.setColor(Color.WHITE);
+			g.setFont(myFont);
+			g.drawString("by: " +this.pauser,1000 - (this.pauser.length() + 4)*40 , 780);
+			g.setColor(curr);
+			g.setFont(prev);	
+		}
+
+		if(this.is_waiting == true){
+			Color curr = g.getColor();
+			g.setColor(new Color(0,0,0,160));											//paints the panel over by a rectangle when paused
+			g.fillRect(0,0,FRAME_WIDTH,FRAME_HEIGHT);
+			// g.drawImage(gfx.returnImage("pause"), 250, 250, 500, 250, null);			//paints the pause image
+	        // Font myFont = null;
+
+	        try{
+	        	// myFont = Font.createFont(Font.TRUETYPE_FONT, new File("font/PixelDart.ttf"));
+			} catch(Exception e){}
+			Font prev = g.getFont();
+			g.setColor(Color.WHITE);
+			g.setFont(new Font("Joystix", Font.BOLD, 50));
+			g.drawString("WAITING FOR OTHER PLAYERS",150 ,250);
+			g.setColor(curr);
+			g.setFont(prev);
 		}
 	}
 

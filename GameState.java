@@ -11,8 +11,10 @@ public class GameState implements Constants{
 	public int[][] mapArr;
 	private boolean is_paused;
 	public String pauser;
+	private int remainingRank;
 
 	public GameState(){
+		remainingRank = 0;
 		players = new HashMap<String,Sprite>();
 		missiles = new ArrayList<Missile>();
 		map = new Map();
@@ -22,6 +24,14 @@ public class GameState implements Constants{
 		// System.out.println(this.mapString());
 	}
 
+	public void addPlayerCount(){
+		remainingRank += 1;
+	}
+
+	public int getRemainingRank(){
+		remainingRank -=1;
+		return remainingRank+1;
+	}
 
 	public void update(String name, Sprite sprite){
 		players.put(name, sprite);
@@ -62,6 +72,18 @@ public class GameState implements Constants{
 		return return_value;
 	}
 
+	public boolean winnerExists(){
+		int counter = 0;
+		for(String key: players.keySet()){
+			if(players.get(key).getLife() != 0){
+				counter++;
+			}
+			if(counter == 2){
+				return false;
+			}
+		}
+		return true;
+	}
 	public int missileCount(){
 		return this.missiles.size();
 	}
