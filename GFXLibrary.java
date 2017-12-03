@@ -61,6 +61,9 @@ public class GFXLibrary{
 			// pause
 			gfxList.put("pause", ImageIO.read(new File("gfx/screen/paused.png")));
 
+			// waiting
+			gfxList.put("waiting", ImageIO.read(new File("gfx/screen/waiting.png")));
+
 			// menu
 			gfxList.put("logo", ImageIO.read(new File("gfx/layout/logo.gif")));
 			gfxList.put("background", ImageIO.read(new File("gfx/layout/background.jpg")));
@@ -70,6 +73,7 @@ public class GFXLibrary{
 			gfxList.put("how-to-hover", ImageIO.read(new File("gfx/layout/howto_hover.jpg")));
 			gfxList.put("play", ImageIO.read(new File("gfx/layout/play.jpg")));
 			gfxList.put("play-hover", ImageIO.read(new File("gfx/layout/play_hover.jpg")));
+			gfxList.put("instructions", ImageIO.read(new File("gfx/layout/howtopanel.jpg")));
 
 		} catch(Exception e){}
 	}

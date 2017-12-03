@@ -31,8 +31,9 @@ public class GhostWars implements Constants {
 	private static JButton play = new JButton();
 	private static JButton howTo = new JButton();
 	private static JButton exit = new JButton();
-	private static JLabel instructions = new JLabel(new ImageIcon("gfx/layout/instructions.jpg"));
-	Image backgroundImage;
+	private static JLabel instructions = new JLabel(new ImageIcon("gfx/layout/howtopanel.jpg"));
+	private static String DISPLAY = "home";
+	private static String INSTRUCTION = "How to Play";
 	
 	public GhostWars() {
 		frame.setPreferredSize(new Dimension(STAT_PANEL_WIDTH + FRAME_WIDTH + CHAT_PANEL_WIDTH, FRAME_HEIGHT));
@@ -71,7 +72,7 @@ public class GhostWars implements Constants {
 		howTo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout howCard = (CardLayout)panel.getLayout();
-				//howCard.show(panel, Menu.HOWTO);
+				howCard.show(panel, GhostWars.INSTRUCTION);
 			}
 		});
 		bg.add(howTo);
@@ -81,7 +82,6 @@ public class GhostWars implements Constants {
 		play.add(playLabel);
 		play.setBorder(null);
 		play.setBounds(600, 350, 300, 120);
-
 		play.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e){
 				new Details(frame);				
@@ -126,9 +126,29 @@ public class GhostWars implements Constants {
 
 		menu.add(bg);
 
-		//panel.add(menu);
+		// how to panel
+		JButton inst = new JButton();
+		inst.add(instructions);
+		inst.setBorder(null);
+		inst.setBounds(0,0,1500,800);
+		inst.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent e){
+				CardLayout displayCard = (CardLayout)panel.getLayout();
+				displayCard.show(panel, GhostWars.DISPLAY);
+			}
+			public void mouseEntered(MouseEvent e){}
+			public void mouseExited(MouseEvent e){}
+			public void mousePressed(MouseEvent e){}
+			public void mouseReleased(MouseEvent e){}
 
-		container.add(menu);
+		});
+		instructionPanel.add(inst);
+
+
+		panel.add(menu, GhostWars.DISPLAY);
+		panel.add(instructionPanel, GhostWars.INSTRUCTION);
+
+		container.add(panel);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 
