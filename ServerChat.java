@@ -12,7 +12,7 @@ public class ServerChat implements Constants, Runnable{
 	public static ArrayList<ClientThread> threads = new ArrayList<ClientThread>();
 	
 	public ServerChat(){
-		System.out.println("Server now listens to port " + PORT + "...");
+		System.out.println("ServerChat now listens to port " + PORT + "...");
 
 
 		// initialization of server socket
