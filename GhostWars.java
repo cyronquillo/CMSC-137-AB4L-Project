@@ -109,9 +109,10 @@ public class GhostWars implements Constants {
 		exit.setBorder(null);
 		exit.setBounds(1000, 350, 300, 120);
 		exit.addMouseListener(new MouseListener() {
-			public void mouseClicked(MouseEvent e){}
+			public void mouseClicked(MouseEvent e){
+				System.exit(0);
+			}
 			public void mouseEntered(MouseEvent e){
-				System.out.println("exiting");
 				exitLabel.setIcon(new ImageIcon("gfx/layout/exit_hover.jpg"));
 			}
 			public void mouseExited(MouseEvent e){
