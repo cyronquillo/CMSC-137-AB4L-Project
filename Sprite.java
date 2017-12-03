@@ -115,7 +115,8 @@ public class Sprite implements Runnable, Constants{
 							 + bullet_size + " "
 							 + life + " "
 							 + health + " "
-							 + speed;
+							 + speed + " "
+							 + rank;
 
 		return return_string;
 	}

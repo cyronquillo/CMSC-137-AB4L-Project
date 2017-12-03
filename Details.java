@@ -10,7 +10,7 @@ public class Details implements Constants{
 		String initialSection = "Create Game";
 		String server = "localhost";
 		
-		Object selection = JOptionPane.showInputDialog(null, "Login as : ", "GHOST WARS", JOptionPane.QUESTION_MESSAGE, null, selectionValues, initialSection);
+		Object selection = JOptionPane.showInputDialog(null, "What do you want to do? ", "GHOST WARS", JOptionPane.QUESTION_MESSAGE, null, selectionValues, initialSection);
 		if(selection.equals("Create Game")){
 			String numberOfPlayers = JOptionPane.showInputDialog("Enter the number of Players");
 			new GhostWarsServer(Integer.parseInt(numberOfPlayers));

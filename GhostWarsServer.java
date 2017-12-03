@@ -95,7 +95,7 @@ public class GhostWarsServer implements Runnable, Constants {
 	public void run(){
 		while(true){
 			if(game.getPlayers().size() > 1 && game.winnerExists() == true){
-				break;
+				broadcast("GAMEOVER:" + game.toString());
 			}
 			byte[] buffer = new byte[256];
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);

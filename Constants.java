@@ -20,6 +20,8 @@ public interface Constants {
 	//frame
 	public static final int FRAME_WIDTH = 1000;
 	public static final int FRAME_HEIGHT = 800;
+	public static final String GAME_PANEL = "game";
+	public static final String WIN_PANEL = "win";
 
 	//chatPanel
 	public static final int CHAT_PANEL_WIDTH = 250;

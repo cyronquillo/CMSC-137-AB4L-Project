@@ -26,9 +26,12 @@ import java.util.ArrayList;
 import java.awt.Font;
 
 public class GhostWarsClient extends JPanel implements Runnable, Constants {
-	private JFrame frame;
+	public JFrame frame;
 	private ChatPanel chatPanel;
 	private StatPanel statPanel;
+	private JPanel cardPanel;
+	private JPanel gamePanel;
+	private WinPanel winPanel;
 	private int prev_x, prev_y,x,y;
 	private Thread t;
 	public String player_name;
@@ -48,11 +51,16 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private int health;
 	private int speed;
 	private boolean is_paused;
+	private boolean is_game_over;
 	private String pauser;
 	private boolean is_waiting;
+	private Container c;
+	private String final_data[];
+	
 
 	public GhostWarsClient(String server_ip, String player_name){
 		super();
+		is_game_over = false;
 		is_waiting = true;
 		this.is_dead = false;
 		this.map = new int[MAP_HEIGHT][MAP_WIDTH];
@@ -77,14 +85,20 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 			socket = new DatagramSocket();
 			socket.setSoTimeout(100);
 		} catch(Exception e){}
-
-		frame.setLayout(new BorderLayout());
+		winPanel = new WinPanel(new JLabel("Congrats"), this);
+		gamePanel = new JPanel(new BorderLayout());
+		cardPanel = new JPanel(new CardLayout());
 		chatPanel = new ChatPanel(access);
 		statPanel = new StatPanel();
-		frame.add(chatPanel, BorderLayout.WEST);
-		frame.add(this, BorderLayout.CENTER);
-		frame.add(statPanel, BorderLayout.EAST);
+		gamePanel.add(chatPanel, BorderLayout.WEST);
+		gamePanel.add(this, BorderLayout.CENTER);
+		gamePanel.add(statPanel, BorderLayout.EAST);
+
+		cardPanel.add(gamePanel, GAME_PANEL);
+		cardPanel.add(winPanel, WIN_PANEL);
 		this.setFocusable(true);
+
+
 		kh = new KeyHandler(this);
 		frame.addKeyListener(kh);
 		frame.addMouseListener(new MouseAction());
@@ -94,6 +108,8 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		c = frame.getContentPane();
+		c.add(cardPanel);
 	}
 
 	public void begin() {
@@ -116,7 +132,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 			System.out.println(data);
 		}
 	}
-
+	private String[] getFinalData(){
+		return this.final_data;
+	}
 	public void run(){
 		while(true){
 			try { 
@@ -210,8 +228,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 							int size = Integer.parseInt(object[5]);
 
 							missileArr.put(src, new ClientMissile(src, x, y, size, is_collided));
-							// offscreen.getGraphics().drawString(src + " lol", x, y);
-							// offscreen.getGraphics().fillOval(x, y, 10, 10);
 						}
 
 					}
@@ -242,6 +258,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					if(this.is_paused == PAUSED){
 						this.pauser = pause[2];
 					}
+					this.repaint();
+				} else if(server_data.startsWith("GAMEOVER")){
+					is_game_over = true;
 					this.repaint();
 				}
 
@@ -325,36 +344,33 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 			Color curr = g.getColor();
 			g.setColor(new Color(0,0,0,160));											//paints the panel over by a rectangle when paused
 			g.fillRect(0,0,FRAME_WIDTH,FRAME_HEIGHT);
-			g.drawImage(gfx.returnImage("pause"), 250, 250, 500, 250, null);			//paints the pause image
-	        Font myFont = null;
-
-	        try{
-	        	myFont = Font.createFont(Font.TRUETYPE_FONT, new File("font/PixelDart.ttf"));
-			} catch(Exception e){}
-			Font prev = g.getFont();
-			g.setColor(Color.WHITE);
-			g.setFont(myFont);
-			g.drawString("by: " +this.pauser,1000 - (this.pauser.length() + 4)*40 , 780);
-			g.setColor(curr);
-			g.setFont(prev);	
+			g.drawImage(gfx.returnImage("pause"), 0, 0, 1000, 800, null);			//paints the pause image
 		}
 
 		if(this.is_waiting == true){
 			Color curr = g.getColor();
 			g.setColor(new Color(0,0,0,160));											//paints the panel over by a rectangle when paused
 			g.fillRect(0,0,FRAME_WIDTH,FRAME_HEIGHT);
-			// g.drawImage(gfx.returnImage("pause"), 250, 250, 500, 250, null);			//paints the pause image
-	        // Font myFont = null;
-
-	        try{
-	        	// myFont = Font.createFont(Font.TRUETYPE_FONT, new File("font/PixelDart.ttf"));
-			} catch(Exception e){}
-			Font prev = g.getFont();
-			g.setColor(Color.WHITE);
-			g.setFont(new Font("Joystix", Font.BOLD, 50));
-			g.drawString("WAITING FOR OTHER PLAYERS",150 ,250);
+			g.drawImage(gfx.returnImage("waiting"), 0, 0, 1000, 800, null);
 			g.setColor(curr);
-			g.setFont(prev);
+		}
+
+		if(this.is_dead == true){
+			Color curr = g.getColor();
+			g.setColor(new Color(0,0,0,160));											//paints the panel over by a rectangle when paused
+			g.fillRect(0,0,FRAME_WIDTH,FRAME_HEIGHT);
+
+			/*INSERT YOU LOSE HERE*/
+			g.drawImage(gfx.returnImage("pause"), 0, 0, 1000, 800, null);
+			g.setColor(curr);
+		} else if(this.is_game_over == true){
+			Color curr = g.getColor();
+			g.setColor(new Color(0,0,0,160));											//paints the panel over by a rectangle when paused
+			g.fillRect(0,0,FRAME_WIDTH,FRAME_HEIGHT);
+
+			/*INSERT YOU WIN HERE*/
+			g.drawImage(gfx.returnImage("waiting"), 0, 0, 1000, 800, null);
+			g.setColor(curr);
 		}
 	}
 
@@ -419,6 +435,10 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
     	return this.is_paused;
     }
 
+    public boolean isGameOver(){
+    	return this.is_game_over;
+    }
+
     class MouseAction implements MouseListener{
 		public void mousePressed(MouseEvent e) {
 			frame.requestFocus();
@@ -445,8 +465,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		}
 
 		public void keyPressed(KeyEvent ke){
-				System.out.println(src.isPaused());
-			if(!src.isDead() && !src.isPaused()){
+			if(!src.isDead() && !src.isPaused() && !src.isGameOver()){
 				int x = src.getXVal();
 				int y = src.getYVal();
 				prev_x = x;
@@ -516,13 +535,24 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 						+ position
 					);
 				}
-			} else if( src.isPaused() || src.isDead()){
+			} else if( src.isPaused() || (src.isDead() && !src.isGameOver())){
 				switch(ke.getKeyCode()){
 					case KeyEvent.VK_ENTER:
 						chatPanel.setFocus();
 						break;	
 				}
-			} 
+			}  else if(src.isGameOver()){
+				switch(ke.getKeyCode()){
+					case KeyEvent.VK_ENTER:
+						chatPanel.setFocus();
+						break;	
+					case KeyEvent.VK_SPACE:
+						winPanel.updateResults(server_data);
+						CardLayout resultsCard = (CardLayout)cardPanel.getLayout();
+						resultsCard.show(cardPanel, WIN_PANEL);
+						break;
+				}
+			}
 			if( src.isPaused() && src.pauser.equals(src.player_name)){
 		 		switch(ke.getKeyCode()){
 					case KeyEvent.VK_P:
@@ -539,7 +569,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		public void keyReleased(KeyEvent ke) {
 			switch(ke.getKeyCode()) {
 				case KeyEvent.VK_RIGHT:
-					System.out.println("binitawan na");
 					moveRight = false;
 					break;
 				case KeyEvent.VK_LEFT:
