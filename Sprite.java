@@ -21,7 +21,9 @@ public class Sprite implements Runnable, Constants{
 	private int health;
 	private Random rand;
 	private int speed;
+	private int rank;
 	public Sprite(String name, InetAddress ip, int port, int ith, GhostWarsServer broadcaster, GameState game, int x, int y){
+		this.rank = -1;
 		this.rand = new Random();
 		this.speed = 5;
 		this.is_dead = false;
@@ -57,7 +59,9 @@ public class Sprite implements Runnable, Constants{
 		t.start();
 
 	}
-
+	public int getLife(){
+		return life;
+	}
 	public InetAddress getIP(){
 		return ip;
 	}
@@ -162,6 +166,7 @@ public class Sprite implements Runnable, Constants{
 			} else{
 				this.state = "SpriteRIP";
 				this.is_dead = IS_DEAD;
+				this.rank = game.getRemainingRank();
 			}
 		}
 	}

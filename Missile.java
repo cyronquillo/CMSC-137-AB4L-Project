@@ -85,7 +85,9 @@ public class Missile extends Thread implements Constants{
 		while(this.is_collided == false){
 			try { 
 				Thread.sleep(4);
-				this.update();
+				if(!game.isPaused()){
+					this.update();
+				}
 
 				//sprite collision
 				HashMap<String, Sprite> playerList = game.getPlayers();
