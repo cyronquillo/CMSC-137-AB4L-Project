@@ -15,6 +15,7 @@ public interface Constants {
 
 	//premade image library
 	public static final GFXLibrary gfx = new GFXLibrary();
+	public static final SFXLibrary sfx = new SFXLibrary();
 
 	//frame
 	public static final int FRAME_WIDTH = 1000;
@@ -79,9 +80,11 @@ public interface Constants {
 	public static final boolean HAS_COLLIDED = true;
 	public static final boolean NOT_COLLIDED = false;
 
+	//pausing
+	public static final boolean PAUSED = true;
+	public static final boolean UNPAUSED = false;
 
 	// sprite speed
-
 	public static final int NORMAL_SPEED = 5;
 	public static final int FAST_SPEED = 10;
 	public static final int FASTER_SPEED = 13;
@@ -98,4 +101,6 @@ public interface Constants {
 	public static final int INIT_LIFE = 3;
 	public static final int INIT_HEALTH = 100;
 
+	//werpa size
+	public static final int WERPA_SIZE = 32;
 }

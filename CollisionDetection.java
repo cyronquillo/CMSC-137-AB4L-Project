@@ -116,6 +116,8 @@ public class CollisionDetection implements Constants{
 				if(map[i][j] == DAMAGE_UP ||
 					map[i][j] == HEALTH_UP ||
 						map[i][j] == SPEED_UP) {
+					blockRect = getBounds(j * 40 + 4, i * 40 + 4, WERPA_SIZE);
+
 					if(sp1Rect.intersects(blockRect)){
 						int werpa = map[i][j];
 						if(sp1.getBulletSize() == BIG_BULLET_SIZE && werpa == DAMAGE_UP){
@@ -202,6 +204,7 @@ public class CollisionDetection implements Constants{
 				} else if(map[i][j] == HEALTH_UP ||
 						map[i][j] == DAMAGE_UP ||
 							map[i][j] == SPEED_UP){
+					blockRect = getBounds(j * 40 + 4, i * 40 + 4, WERPA_SIZE);
 					if(miRect.intersects(blockRect)){
 						mi.setCollided(HAS_COLLIDED);
 						map[i][j] = TILE_FLOOR;

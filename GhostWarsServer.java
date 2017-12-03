@@ -190,13 +190,27 @@ public class GhostWarsServer implements Runnable, Constants {
   								zero_ammo = true;
   							}
   						}
-  						if(zero_ammo == false)
+  						if(zero_ammo == false){
+  							if(size == BULLET_SIZE){
+  								broadcast("AUDIO MissileShot");
+  							} else{
+  								broadcast("AUDIO BigMissileShot");
+  							}
 	  						game.addMissile(new Missile(x, y, size, src, position, game.getMissiles(), this, game));
+  						}
   					}
-  					// if (game.missileCount() != 0){
-  					// 	game.updateMissiles();
-  					// 	broadcast(game.toString());
-  					// }
+  					if(player_data.startsWith("PAUSE")){
+  						String[] data = player_data.split(" ");
+  						boolean to_pause = Boolean.parseBoolean(data[1]);
+  						game.setPaused(to_pause);
+  						if(to_pause == UNPAUSED){
+  							game.pauser = "";
+  						} else{
+  							game.pauser = data[2];
+  						}
+  						broadcast("PAUSE " + to_pause + " " +game.pauser );
+  					}
+
   					break;
 
 			}

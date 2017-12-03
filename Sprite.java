@@ -143,6 +143,7 @@ public class Sprite implements Runnable, Constants{
 
 	public void collisionResponse(Missile mi){
 		int damage = mi.getBulletSize();
+		broadcaster.broadcast("AUDIO MissileHit");
 		if(damage == BIG_BULLET_SIZE){
 			damage = 40;
 		} else{
@@ -154,6 +155,7 @@ public class Sprite implements Runnable, Constants{
 			this.health = INIT_HEALTH;
 			this.life = this.life -1;
 			if(this.life != 0){
+				broadcaster.broadcast("AUDIO Resurrect " + this.name );
 				this.resurrect();
 				this.bullet_size = BULLET_SIZE;
 				this.speed = NORMAL_SPEED;
@@ -168,12 +170,16 @@ public class Sprite implements Runnable, Constants{
 		switch(werpa){
 			case DAMAGE_UP:
 				this.bullet_size = BIG_BULLET_SIZE;
+				broadcaster.broadcast("AUDIO DamageUp");
 				break;
 			case HEALTH_UP:
 				this.health = this.health + 40;
 				if(this.health > 100){
 					this.life++;
+					broadcaster.broadcast("AUDIO LifeUp");
 					this.health = this.health % 100;
+				} else{
+					broadcaster.broadcast("AUDIO HealthUp");
 				}
 				break;
 			case SPEED_UP:
@@ -184,6 +190,8 @@ public class Sprite implements Runnable, Constants{
 				} else{
 					this.speed = FASTEST_SPEED;
 				}
+				broadcaster.broadcast("AUDIO SpeedUp");
+
 				break;
 		}
 	}

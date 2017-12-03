@@ -9,12 +9,15 @@ public class GameState implements Constants{
 	private ArrayList<Missile> missiles;
 	public Map map; 
 	public int[][] mapArr;
+	private boolean is_paused;
+	public String pauser;
 
 	public GameState(){
 		players = new HashMap<String,Sprite>();
 		missiles = new ArrayList<Missile>();
 		map = new Map();
 		mapArr = map.getTileMap().getMap();
+		this.is_paused = false;
 		// System.out.println(map.getTileMap().toString());
 		// System.out.println(this.mapString());
 	}
@@ -36,6 +39,14 @@ public class GameState implements Constants{
 			}
 		}
 		return return_val;
+	}
+
+	public void setPaused(boolean p){
+		this.is_paused = p;
+	}
+
+	public boolean isPaused(){
+		return this.is_paused;
 	}
 	public String toString(){
 		String return_value = "";

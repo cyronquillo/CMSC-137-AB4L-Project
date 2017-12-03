@@ -57,6 +57,10 @@ public class GFXLibrary{
 			gfxList.put("damage-up", ImageIO.read(new File("gfx/werpa/damage-up.png")));
 			gfxList.put("speed-up", ImageIO.read(new File("gfx/werpa/speed-up.png")));
 
+
+			// pause
+			gfxList.put("pause", ImageIO.read(new File("gfx/screen/paused.png")));
+
 		} catch(Exception e){}
 	}
 

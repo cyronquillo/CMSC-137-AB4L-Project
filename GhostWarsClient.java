@@ -18,10 +18,12 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.util.Random;
 import java.io.IOException;
+import java.io.File;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.awt.Font;
 
 public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private JFrame frame;
@@ -29,7 +31,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private StatPanel statPanel;
 	private int prev_x, prev_y,x,y;
 	private Thread t;
-	private String player_name;
+	public String player_name;
 	private String server_ip;
 	private boolean is_connected;
 	private DatagramSocket socket;
@@ -45,6 +47,8 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private int life;
 	private int health;
 	private int speed;
+	private boolean is_paused;
+	private String pauser;
 
 	public GhostWarsClient(String server_ip, String player_name){
 		super();
@@ -214,7 +218,27 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 							this.map[i][j] =  Integer.parseInt(row[j]);
 						}
 					}
+				} else if(server_data.startsWith("AUDIO")) {
+					String aud[] = server_data.split(" ");
+					if(aud[1].equals("Resurrect")){
+						if(this.player_name.equals(aud[2])){
+							System.out.println("AUDIO RCVD:" + aud[1]);
+							sfx.returnAudio(aud[1].trim()).play(false);	
+						}
+					} else{
+						System.out.println("AUDIO RCVD:" + aud[1]);
+						sfx.returnAudio(aud[1].trim()).play(false);
+					}
+				} else if(server_data.startsWith("PAUSE")){
+					System.out.println("CLIENT RCVD: " + server_data);
+					String pause[] = server_data.split(" ");
+					this.is_paused = Boolean.parseBoolean(pause[1]);
+					if(this.is_paused == PAUSED){
+						this.pauser = pause[2];
+					}
+					this.repaint();
 				}
+
 			} 
 
 
@@ -229,6 +253,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		Image img = null;
 		for(int i = 0; i < MAP_HEIGHT; i++){
 			for(int j = 0; j < MAP_WIDTH; j++){
+				int inc = 0; 
 				if(this.map[i][j] == TILE_FLOOR){
 					img = gfx.returnImage(GROUND);
 				} else if(this.map[i][j] == TILE_CORNER){
@@ -252,13 +277,22 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 				} else if(this.map[i][j] == VERTICAL_DOWN_BORDER){
 					img = gfx.returnImage(VERTICAL_DOWN);
 				} else if(this.map[i][j] == HEALTH_UP){
+					img = gfx.returnImage(GROUND);
+					g.drawImage(img,j*40,i*40, BLOCK_SIZE, BLOCK_SIZE, null);
 					img = gfx.returnImage(HEALTH);
+					inc = 4;
 				} else if(this.map[i][j] == SPEED_UP){
+					img = gfx.returnImage(GROUND);
+					g.drawImage(img,j*40,i*40, BLOCK_SIZE, BLOCK_SIZE, null);
 					img = gfx.returnImage(SPEED);
+					inc = 4;
 				} else if(this.map[i][j] == DAMAGE_UP){
+					img = gfx.returnImage(GROUND);
+					g.drawImage(img,j*40,i*40, BLOCK_SIZE, BLOCK_SIZE, null);
 					img = gfx.returnImage(DAMAGE);
+					inc = 4;
 				}
-				g.drawImage(img,j*40,i*40, BLOCK_SIZE, BLOCK_SIZE, null);
+				g.drawImage(img,j * 40 + inc,i * 40 + inc, BLOCK_SIZE - inc*2, BLOCK_SIZE - inc*2, null);
 			}
 		}
     	for(String key: csHash.keySet()){
@@ -279,7 +313,26 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
     			
     		}
     	}
-		// g.drawImage( offscreenMissile, 10,10, null);
+		
+		// pause drawing
+		if(this.is_paused == PAUSED){
+				System.out.println("dapat nagpprint to");
+    			Color curr = g.getColor();
+				g.setColor(new Color(0,0,0,160));											//paints the panel over by a rectangle when paused
+				g.fillRect(0,0,FRAME_WIDTH,FRAME_HEIGHT);
+				g.drawImage(gfx.returnImage("pause"), 250, 250, 500, 250, null);			//paints the pause image
+		        Font myFont = null;
+
+		        try{
+		        	myFont = Font.createFont(Font.TRUETYPE_FONT, new File("font/PixelDart.ttf"));
+				} catch(Exception e){}
+				Font prev = g.getFont();
+				g.setColor(Color.WHITE);
+				g.setFont(myFont);
+				g.drawString("by: " +this.pauser,1000 - (this.pauser.length() + 4)*40 , 780);
+				g.setColor(curr);
+				g.setFont(prev);	
+		}
 	}
 
 	public void update(Graphics g){
@@ -338,6 +391,11 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
     public boolean isDead(){
     	return this.is_dead;
     }
+
+    public boolean isPaused(){
+    	return this.is_paused;
+    }
+
     class MouseAction implements MouseListener{
 		public void mousePressed(MouseEvent e) {
 			frame.requestFocus();
@@ -364,7 +422,8 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		}
 
 		public void keyPressed(KeyEvent ke){
-			if(!src.isDead()){
+				System.out.println(src.isPaused());
+			if(!src.isDead() && !src.isPaused()){
 				int x = src.getXVal();
 				int y = src.getYVal();
 				prev_x = x;
@@ -419,7 +478,11 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 						break;
 					case KeyEvent.VK_ENTER:
 						chatPanel.setFocus();
-						break;		
+						break;	
+					case KeyEvent.VK_P:
+						System.out.println("PAUSED");
+						send("PAUSE true " + src.player_name);
+						break;	
 				}
 				
 				if (prev_x != x || prev_y != y){
@@ -430,19 +493,30 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 						+ position
 					);
 				}
-			} else{
+			} else if( src.isPaused() || src.isDead()){
 				switch(ke.getKeyCode()){
 					case KeyEvent.VK_ENTER:
 						chatPanel.setFocus();
 						break;	
 				}
+			} 
+			if( src.isPaused() && src.pauser.equals(src.player_name)){
+		 		switch(ke.getKeyCode()){
+					case KeyEvent.VK_P:
+						System.out.println("UNPAUSED");
+						src.pauser = "";
+						send("PAUSE false " + src.player_name);
+						break;	
+				}
 			}
-			
+
+
 		}
 
 		public void keyReleased(KeyEvent ke) {
 			switch(ke.getKeyCode()) {
 				case KeyEvent.VK_RIGHT:
+					System.out.println("binitawan na");
 					moveRight = false;
 					break;
 				case KeyEvent.VK_LEFT:
