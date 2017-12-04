@@ -143,7 +143,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	public void run(){
 		while(true){
 			try { 
-				Thread.sleep(4);
+				Thread.sleep(0);
 			} catch(Exception e){}
 			
 			byte[] buffer = new byte[1024];
