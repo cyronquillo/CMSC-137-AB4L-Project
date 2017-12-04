@@ -143,7 +143,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	public void run(){
 		while(true){
 			try { 
-				Thread.sleep(0);
+				Thread.sleep(4);
 			} catch(Exception e){}
 			
 			byte[] buffer = new byte[1024];
@@ -193,6 +193,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					sfx.returnAudio("Welcome").play(false);
 					statPanel.repaint();	
 					this.repaint();
+					chatPanel.repaint();
 				}
 				if(server_data.startsWith("PLAYER")){
 					String[] objects = server_data.split(":");
