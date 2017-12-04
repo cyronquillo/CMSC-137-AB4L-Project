@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.awt.event.InputEvent;
 import java.awt.Robot;
+import javax.swing.border.LineBorder;
 
 public class ChatPanel extends JPanel implements Observer, Constants {
     private JTextArea chatArea;
@@ -37,7 +38,7 @@ public class ChatPanel extends JPanel implements Observer, Constants {
 
     private void buildGUI() {
         JPanel panel = new JPanel();
-        panel.setPreferredSize(new Dimension(150, 250));
+        panel.setPreferredSize(new Dimension(230, 200));
         panel.setOpaque(false);
 
         chatArea = new JTextArea(20, 20);
@@ -51,14 +52,11 @@ public class ChatPanel extends JPanel implements Observer, Constants {
         c.gridy = 0;
         add(panel, c);
         c.gridy = 1;
-        //chatArea.setBounds(15, 300, 220, 300);
         add(new JScrollPane(chatArea), c);
             
         chatBox = new JTextField();
         chatBox.setPreferredSize(new Dimension(220, 50));
-        //chatBox.setBounds(15, 630, 220, 50);
-        //add(chatBox);
-        c.gridy = 1;
+        c.gridy = 2;
         add(chatBox, c);
 
         // Action listeners
