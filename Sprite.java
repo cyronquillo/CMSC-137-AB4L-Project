@@ -181,11 +181,14 @@ public class Sprite implements Runnable, Constants{
 				break;
 			case HEALTH_UP:
 				this.health = this.health + 40;
-				if(this.health > 100){
+				if(this.health > 100 && this.life < 4){
 					this.life++;
 					broadcaster.broadcast("AUDIO LifeUp");
 					this.health = this.health % 100;
-				} else{
+				} else if(this.health > 100 && this.life == 4){
+					this.health = 100;
+					broadcaster.broadcast("AUDIO HealthUp");
+				}else{
 					broadcaster.broadcast("AUDIO HealthUp");
 				}
 				break;

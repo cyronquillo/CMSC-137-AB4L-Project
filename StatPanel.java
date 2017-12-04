@@ -23,20 +23,24 @@ public class StatPanel extends JPanel implements Observer, Constants{
 		scrollPane = new JScrollPane(scrollPanel);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);	
-			textArea = new JTextArea(20,20);
-			scrollPanel.add(textArea);
-			JTextArea a1 = new JTextArea(20,20);
-			scrollPanel.add(a1);
-			JTextArea a2 = new JTextArea(20,20);
-			scrollPanel.add(a2);
-			JTextArea a3 = new JTextArea(20,20);
-			scrollPanel.add(a3);
-			JTextArea a4 = new JTextArea(20,20);
-			scrollPanel.add(a4);
+			// textArea = new JTextArea(20,20);
+			// scrollPanel.add(textArea);
+			// JTextArea a1 = new JTextArea(20,20);
+			// scrollPanel.add(a1);
+			// JTextArea a2 = new JTextArea(20,20);
+			// scrollPanel.add(a2);
+			// JTextArea a3 = new JTextArea(20,20);
+			// scrollPanel.add(a3);
+			// JTextArea a4 = new JTextArea(20,20);
+			// scrollPanel.add(a4);
 		add(scrollPane, BorderLayout.CENTER);	
 
 	}
 
+	public void addPanels(Stat panel){
+		scrollPanel.add(panel);
+	}
+	
 	public void update(Observable o, Object arg) {
         final Object finalArg = arg;
         SwingUtilities.invokeLater(new Runnable() {

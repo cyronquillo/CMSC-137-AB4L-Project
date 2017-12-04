@@ -22,7 +22,6 @@ public class ClientThread extends Thread{
 
 
 			//notify other clients that a new client has entered
-			output.println("Hello " + usr + "!\n[NOTE: type 'bye' and press Enter to leave the room anytime]");
 			
 			for(int i = 0; i < ServerChat.threads.size(); i++){
 				if(ServerChat.threads.get(i) != this){
@@ -33,9 +32,6 @@ public class ClientThread extends Thread{
 			// message sending
 			while(true){
 				String line = input.readLine();
-				if(line.equals("bye")) {
-					break;
-				}
 				synchronized(this){
 					for(int i = 0; i < ServerChat.threads.size(); i++){
 						ServerChat.threads.get(i).output.println("[" + usr + "]: " + line);
@@ -43,23 +39,9 @@ public class ClientThread extends Thread{
 				}
 			}
 
-
-			// notify other clients that a client has left
-			for(int i = 0; i < ServerChat.threads.size(); i++){
-				if(ServerChat.threads.get(i) != this){
-					ServerChat.threads.get(i).output.println(usr + " has left the chat room :(");
-				}
-			}
-
-			output.println("You have left the chat room.");
-
-
-			ServerChat.threads.remove(this);
-
-
-			input.close();
-			output.close();
-			cSocket.close();
+			// input.close();
+			// output.close();
+			// cSocket.close();
 		} catch (IOException ioe){
 			System.out.println(ioe);
 		}
