@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 public class WinPanel extends JPanel implements Constants{
 	public WinPanel(JLabel label, GhostWarsClient copy){
 		// this.add(label);
-
 		JButton menu = new JButton();
 		menu.add(label);
 		menu.setBorder(null);
@@ -32,6 +31,7 @@ public class WinPanel extends JPanel implements Constants{
 
 
 	public void updateResults(String res){
+		System.out.println(res);
 
 	}
 

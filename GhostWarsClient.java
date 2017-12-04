@@ -215,7 +215,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 							int speed = Integer.parseInt(object[9]);
 							String original_color = state.split("\\.")[0]; 
 							if(is_dead){
-								img = gfx.returnImage(state);
+								img = gfx.returnImage("spriteRIP");
 								color = "white";
 								String position = "dead";
 							} else{
@@ -286,6 +286,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					this.repaint();
 				} else if(server_data.startsWith("GAMEOVER")){
 					is_game_over = true;
+					System.out.println(server_data);
 					this.repaint();
 				}
 
