@@ -23,26 +23,6 @@ public class WinPanel extends JPanel implements Observer, Constants{
 	public WinPanel(JLabel label, GhostWarsClient copy){
 		sprCollection = new HashMap<Integer, ClientSprite>();
 		setPreferredSize(new Dimension(1500, 800));
-		JLabel bg = new JLabel(new ImageIcon("gfx/panels/win_blue.gif"));
-		bg.setBounds(0, 0, 1500, 800);
-		this.add(bg);
-
-		JButton menu = new JButton();
-		menu.add(label);
-		menu.setBorder(null);
-		menu.setBounds(0,0,1500,800);
-		menu.addMouseListener(new MouseListener() {
-			public void mouseClicked(MouseEvent e){
-				copy.frame.dispose();
-				System.exit(0);
-			}
-			public void mouseEntered(MouseEvent e){}
-			public void mouseExited(MouseEvent e){}
-			public void mousePressed(MouseEvent e){}
-			public void mouseReleased(MouseEvent e){}
-
-		});
-		this.add(menu);
 		this.repaint();
 
 	}
@@ -54,10 +34,11 @@ public class WinPanel extends JPanel implements Observer, Constants{
 		System.out.println("pumasok");
 		try{
 			// Image icon = new ImageIcon("gfx/panels/win_"+ sprCollection.get(1).color +".gif").getImage();
-			// Image img = ImageIO.read(new File("gfx/panels/win_"+ sprCollection.get(1).color +".gif"));
+			System.out.println(sprCollection.get(1).color);
+			Image img = ImageIO.read(new File("gfx/panels/win_"+ sprCollection.get(1).color +".jpg"));
 			// if(img == null) System.out.println("WTFuck");
 			// if(icon == null) System.out.println("WTFeck");
-			// g.drawImage(icon, 0, 0, 1500, 800, null );
+			g.drawImage(img, 0, 0, 1500, 800, null );
 		} catch(Exception e){
 			System.out.println(e.getMessage());
 		}
@@ -72,7 +53,7 @@ public class WinPanel extends JPanel implements Observer, Constants{
 				String[] object = objects[i].split(" ");
 				if(object[0].startsWith("PLAYER")){
 					String name = object[1].trim();
-					String color = object[4].split("\\.")[1];
+					String color = object[4].split("\\.")[0];
 					int rank = Integer.parseInt(object[10]);
 					sprCollection.put(rank, new ClientSprite(name, color, rank)); 
 				}
