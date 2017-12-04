@@ -215,7 +215,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 							int speed = Integer.parseInt(object[9]);
 							String original_color = state.split("\\.")[0]; 
 							if(is_dead){
-								img = gfx.returnImage("spriteRIP");
+								img = gfx.returnImage("SpriteRIP");
 								color = "white";
 								String position = "dead";
 							} else{
@@ -384,7 +384,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 			g.fillRect(0,0,FRAME_WIDTH,FRAME_HEIGHT);
 
 			/*INSERT YOU LOSE HERE*/
-			g.drawImage(gfx.returnImage("pause"), 0, 0, 1000, 800, null);
+			g.drawImage(gfx.returnImage("you-lose"), 0, 0, 1000, 800, null);
 			g.setColor(curr);
 		} else if(this.is_game_over == true){
 			Color curr = g.getColor();
@@ -392,8 +392,13 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 			g.fillRect(0,0,FRAME_WIDTH,FRAME_HEIGHT);
 
 			/*INSERT YOU WIN HERE*/
-			g.drawImage(gfx.returnImage("waiting"), 0, 0, 1000, 800, null);
+			g.drawImage(gfx.returnImage("you-win"), 0, 0, 1000, 800, null);
 			g.setColor(curr);
+		}
+
+		if(this.is_game_over == true){
+			g.drawImage(gfx.returnImage("view-results"), 0, 0, 1000, 800, null);
+
 		}
 	}
 

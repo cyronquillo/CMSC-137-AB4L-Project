@@ -59,11 +59,13 @@ public class GFXLibrary{
 			gfxList.put("speed-up", ImageIO.read(new File("gfx/werpa/speed-up.png")));
 
 
-			// pause
+			// screen texts
 			gfxList.put("pause", ImageIO.read(new File("gfx/screen/paused.png")));
-
-			// waiting
 			gfxList.put("waiting", ImageIO.read(new File("gfx/screen/waiting.png")));
+			gfxList.put("you-win", ImageIO.read(new File("gfx/screen/youwin.png")));
+			gfxList.put("you-lose", ImageIO.read(new File("gfx/screen/youlose.png")));
+			gfxList.put("view-results", ImageIO.read(new File("gfx/screen/viewresults.png")));
+
 
 			// menu
 			gfxList.put("logo", ImageIO.read(new File("gfx/layout/logo.gif")));
