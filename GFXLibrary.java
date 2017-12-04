@@ -2,6 +2,7 @@ package instantiation;
 import java.util.HashMap;
 import java.io.File;                                //import statements
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 public class GFXLibrary{
@@ -75,10 +76,17 @@ public class GFXLibrary{
 			gfxList.put("play-hover", ImageIO.read(new File("gfx/layout/play_hover.jpg")));
 			gfxList.put("instructions", ImageIO.read(new File("gfx/layout/howtopanel.jpg")));
 
+			// chatBG
+			gfxList.put("blueBG", ImageIO.read(new File("gfx/panels/chat_stat_panel_blue.jpg")));
+			gfxList.put("redBG", ImageIO.read(new File("gfx/panels/chat_stat_panel_red.jpg")));
+			gfxList.put("pinkBG", ImageIO.read(new File("gfx/panels/chat_stat_panel_pink.jpg")));
+			gfxList.put("orangeBG", ImageIO.read(new File("gfx/panels/chat_stat_panel_orange.jpg")));
+
 		} catch(Exception e){}
 	}
 
 	public Image returnImage(String pseudo){
 		return this.gfxList.get(pseudo);
 	}
+
 }

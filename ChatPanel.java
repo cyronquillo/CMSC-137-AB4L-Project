@@ -14,7 +14,8 @@ import java.net.Socket;
 import java.util.Observable;
 import java.util.Observer;
 import java.awt.Color;
-
+import javax.imageio.ImageIO;
+import java.io.File;
 import java.awt.event.InputEvent;
 import java.awt.Robot;
 
@@ -77,15 +78,23 @@ public class ChatPanel extends JPanel implements Observer, Constants {
     }
 
     public void paintComponent(Graphics g){
-        Color def = g.getColor();
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, CHAT_PANEL_WIDTH, CHAT_PANEL_HEIGHT);
-        g.setColor(def);
+        // Color def = g.getColor();
+        // g.setColor(Color.WHITE);
+        // g.fillRect(0, 0, CHAT_PANEL_WIDTH, CHAT_PANEL_HEIGHT);
+        // g.setColor(def);
+
+        try{
+            String color = client.getCurrSpriteColor();
+            g.drawImage(ImageIO.read(new File("gfx/panels/chat_stat_panel_" + color + ".jpg")),0,0, CHAT_PANEL_WIDTH, CHAT_PANEL_HEIGHT, null);
+        }catch(Exception e){}
+
+
 
         g.drawString("Name: " + client.getName(), 20, 40);
         g.drawString("Health: ", 20, 65);
         g.fillRoundRect(110, 40, client.getHealth(), 14, 10, 10);
         g.drawString("Life: ", 140, 65);
+        
         Image img = gfx.returnImage(client.getCurrSpriteColor() + "Down");
         for(int i = 0; i < client.getLife(); i++){
             g.drawImage(img, 150 + (20) * (i+1),50, 15, 15, null);
@@ -122,35 +131,3 @@ public class ChatPanel extends JPanel implements Observer, Constants {
         });
     }
 }
-
-
-/*
-    public String getName(){
-        return this.player_name;
-    }
-
-    public int getBulletSize(){
-        return this.bullet_size;
-    }
-
-    public int getLife(){
-        return this.life;
-    }
-
-    public int getHealth(){
-        return this.health;
-    }
-
-    public String getCurrSpriteColor(){
-        return this.color;
-    }
-
-    public int getSpeed(){
-        return this.speed;
-    }
-
-
-
-
-
-*/

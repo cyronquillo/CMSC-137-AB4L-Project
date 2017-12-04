@@ -3,6 +3,8 @@ package instantiation;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.Dimension;
+import java.awt.Graphics;
+
 public class Stat extends JPanel implements Constants{
 	String name;
 
@@ -10,6 +12,7 @@ public class Stat extends JPanel implements Constants{
 		super();
 		name = "namae"+count;
 		buildGUI(count);
+		this.repaint();
 	}
 
 
@@ -21,6 +24,13 @@ public class Stat extends JPanel implements Constants{
 	public String getSpriteName(){
 		return this.name;
 	}
+
+	public void paintComponent(Graphics g){
+		g.drawRect(0,0,STAT_PANEL_WIDTH, STAT_PANEL_WIDTH);
+		// this.repaint();
+	}
+
+
 
 
 
