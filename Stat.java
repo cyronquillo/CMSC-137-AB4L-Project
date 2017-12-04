@@ -5,6 +5,9 @@ import javax.swing.JLabel;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.File;
 
 public class Stat extends JPanel implements Constants{
 	private String name;
@@ -38,7 +41,7 @@ public class Stat extends JPanel implements Constants{
 		this.repaint();
 	}
 	private void buildGUI() {
-		setPreferredSize(new Dimension(STAT_PANEL_WIDTH-20, STAT_PANEL_WIDTH-20));
+		setPreferredSize(new Dimension(STAT_PANEL_WIDTH, 250));
 	}
 
 	public String getSpriteName(){
@@ -46,11 +49,12 @@ public class Stat extends JPanel implements Constants{
 	}
 
 	public void paintComponent(Graphics g){
-		g.drawRect(0,0,STAT_PANEL_WIDTH, STAT_PANEL_WIDTH);
+		g.drawRect(0,0,250, 250);
 
-		/*try{
-            g.drawImage(ImageIO.read(new File("gfx/panels/chat_stat_panel_" + color + ".jpg")),0,0, CHAT_PANEL_WIDTH, CHAT_PANEL_HEIGHT, null);
-        }catch(Exception e){}*/
+
+		try{
+            g.drawImage(ImageIO.read(new File("gfx/panels/stat_panel_" + color + ".jpg")),0,0, 250, 250, null);
+        }catch(Exception e){}
 
 
 

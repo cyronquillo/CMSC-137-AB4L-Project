@@ -28,7 +28,6 @@ public class ChatPanel extends JPanel implements Observer, Constants {
     private Robot robot;
     private GhostWarsClient client;
 
-
     public ChatPanel(ChatAccess chatAccess, GhostWarsClient client) {
         this.chatAccess = chatAccess;
         this.client = client;
@@ -90,7 +89,7 @@ public class ChatPanel extends JPanel implements Observer, Constants {
     public void paintComponent(Graphics g){
         // Color def = g.getColor();
         // g.setColor(Color.WHITE);
-        // g.fillRect(0, 0, CHAT_PANEL_WIDTH, CHAT_PANEL_HEIGHT);
+        g.fillRect(0, 0, CHAT_PANEL_WIDTH, CHAT_PANEL_HEIGHT);
         // g.setColor(def);
 
         try{
