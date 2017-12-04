@@ -19,6 +19,7 @@ import java.awt.Container;
 import java.lang.Thread;
 import javax.swing.Box;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Component;
 import java.awt.Color;
 
@@ -153,6 +154,7 @@ public class GhostWars implements Constants {
 		frame.setLocationRelativeTo(null);
 
 		frame.setVisible(true);
+		menu.repaint();
 	}
 
 	public static void main(String[] args) {

@@ -29,13 +29,6 @@ public class StatPanel extends JPanel implements Constants{
 
 	}
 
-	// public void initPanel(Stat panel){
-	// 	collection.put(panel.getSpriteName(), panel);
-	// 	scrollPanel.add(panel);
-
-	// 	scrollPanel.repaint();
-	// 	this.repaint();
-	// }
 
 	public void updatePanel(Stat panel){
 		if(!collection.containsKey(panel.getSpriteName())){
