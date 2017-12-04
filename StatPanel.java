@@ -10,7 +10,7 @@ public class StatPanel extends JPanel implements Constants{
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
     private JPanel scrollPanel;
-    private HashMap<String, Stat> collection;
+    public HashMap<String, Stat> collection;
 	public StatPanel() {
 		collection = new HashMap<String, Stat>();
 		setPreferredSize(new Dimension(STAT_PANEL_WIDTH, STAT_PANEL_HEIGHT));
@@ -20,30 +20,45 @@ public class StatPanel extends JPanel implements Constants{
 
 	private void buildGUI() {
 		scrollPanel = new JPanel();
-		scrollPanel.setSize(new Dimension(STAT_PANEL_WIDTH-20, STAT_PANEL_HEIGHT-20));
+		scrollPanel.setPreferredSize(new Dimension(STAT_PANEL_WIDTH-20, STAT_PANEL_HEIGHT-20));
 		scrollPanel.setLayout( new BoxLayout( scrollPanel, BoxLayout.Y_AXIS ) );
 		scrollPane = new JScrollPane(scrollPanel);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);	
-        	addPanels(new Stat(1));
-        	addPanels(new Stat(2));
-        	addPanels(new Stat(3));
-        	addPanels(new Stat(4));
-        	addPanels(new Stat(5));			
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);				
 		add(scrollPane, BorderLayout.CENTER);	
 
 	}
 
-	public void addPanels(Stat panel){
-		collection.put(panel.getSpriteName(), panel);
-		scrollPanel.add(panel);
-	}
+	// public void initPanel(Stat panel){
+	// 	collection.put(panel.getSpriteName(), panel);
+	// 	scrollPanel.add(panel);
 
-	public void removePanel(){
-		scrollPanel.remove(collection.get("namae"+collection.size()));
-		collection.remove("namae"+collection.size());
+	// 	scrollPanel.repaint();
+	// 	this.repaint();
+	// }
+
+	public void updatePanel(Stat panel){
+		if(!collection.containsKey(panel.getSpriteName())){
+			collection.put(panel.getSpriteName(), panel);
+			scrollPanel.add(panel);
+		}
+		else{
+			collection.get(panel.getSpriteName()).update(panel);
+		}
+
+		//change line below to addSorted if time allows
+
+		scrollPanel.repaint();
+		this.revalidate();
 		this.repaint();
 	}
+
+	public void paintComponent(Graphics g){
+		for(String key: collection.keySet()){
+			collection.get(key).repaint();
+		}
+	}
+
 
 
 	public void updateStat(){}
