@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.awt.event.InputEvent;
 import java.awt.Robot;
+import java.awt.GraphicsEnvironment;
 import javax.swing.border.LineBorder;
 
 public class ChatPanel extends JPanel implements Observer, Constants {
@@ -96,7 +97,6 @@ public class ChatPanel extends JPanel implements Observer, Constants {
             String color = client.getCurrSpriteColor();
             g.drawImage(ImageIO.read(new File("gfx/panels/chat_stat_panel_" + color + ".jpg")),0,0, CHAT_PANEL_WIDTH, CHAT_PANEL_HEIGHT, null);
         }catch(Exception e){}
-
 
 
         g.drawString("Name: " + client.getName(), 20, 40);

@@ -15,6 +15,7 @@ public class StatPanel extends JPanel implements Constants{
 		collection = new HashMap<String, Stat>();
 		setPreferredSize(new Dimension(STAT_PANEL_WIDTH, STAT_PANEL_HEIGHT));
 		setLayout(new BorderLayout());
+		setBackground(Color.BLACK);
 		buildGUI();
 	}
 
@@ -24,7 +25,8 @@ public class StatPanel extends JPanel implements Constants{
 		scrollPanel.setLayout( new BoxLayout( scrollPanel, BoxLayout.Y_AXIS ) );
 		scrollPane = new JScrollPane(scrollPanel);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);				
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBackground(Color.BLACK);			
 		add(scrollPane, BorderLayout.CENTER);	
 
 	}
