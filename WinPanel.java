@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Font;
 import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -15,6 +16,7 @@ import javax.swing.SwingUtilities;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.awt.Color;
 
 
 
@@ -39,19 +41,67 @@ public class WinPanel extends JPanel implements Observer, Constants{
 
 	public void paintComponent(Graphics g){
 		g.clearRect(0,0,1500, 800);
-		System.out.println("pumasok");
 		try{
 			// Image icon = new ImageIcon("gfx/panels/win_"+ sprCollection.get(1).color +".gif").getImage();
 			System.out.println(sprCollection.get(1).color);
 			Image img = ImageIO.read(new File("gfx/panels/win_"+ sprCollection.get(1).color +".jpg"));
-			// if(img == null) System.out.println("WTFuck");
-			// if(icon == null) System.out.println("WTFeck");
 			g.drawImage(img, 0, 0, 1500, 800, null );
 		} catch(Exception e){
 			System.out.println(e.getMessage());
 		}
 
-		g.drawString("WTF",10,10);
+		int i = 1;
+		boolean done = false; 
+		Image img = null;
+		g.setFont(g.getFont().deriveFont(105f));
+		g.setColor(Color.WHITE);
+		while(sprCollection.containsKey(i)){
+
+			ClientSprite cs = sprCollection.get(i);
+			try{
+				System.out.println("here is color: " + cs.color);
+				img = ImageIO.read(new File("gfx/panels/rank_"+ cs.color +".jpg"));
+			} catch(Exception e){
+				System.out.println(e);
+			}
+
+			switch(i){
+				case 1:
+					g.drawImage(img, 450, 275, 600, 250, null);
+					g.setFont(g.getFont().deriveFont(105f));
+					g.setColor(Color.WHITE);
+					g.drawString("1", 510, 435);
+					g.setColor(Color.BLACK);
+					g.setFont(g.getFont().deriveFont(40f));
+					g.drawString(cs.name, 680, 415);
+
+					break;
+				case 2:
+					g.drawImage(img, 100, 175, 300, 125, null ); // 2nd
+					g.setFont(g.getFont().deriveFont(40f));	
+					g.setColor(Color.WHITE);
+					g.drawString("2", 135, 250);
+					g.setColor(Color.BLACK);
+					g.setFont(g.getFont().deriveFont(25f));
+					g.drawString(cs.name, 215, 245);
+
+				
+					break;
+				case 3:
+					g.drawImage(img, 1100, 475, 300, 125, null ); // 3rd
+					g.setFont(g.getFont().deriveFont(40f));	
+					g.setColor(Color.WHITE);
+					g.drawString("3", 1135, 550);
+					g.setColor(Color.BLACK);
+					g.setFont(g.getFont().deriveFont(25f));
+					g.drawString(cs.name, 1215, 545);
+
+					break;
+			}
+			i++;
+			if(img == null) break;
+		}
+
 	}
 
 	public void updateResults(String res){

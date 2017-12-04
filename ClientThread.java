@@ -39,9 +39,6 @@ public class ClientThread extends Thread{
 				}
 			}
 
-			// input.close();
-			// output.close();
-			// cSocket.close();
 		} catch (IOException ioe){
 			System.out.println(ioe);
 		}
