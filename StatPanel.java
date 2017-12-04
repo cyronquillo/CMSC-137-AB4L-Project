@@ -4,13 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.HashMap;
 
-public class StatPanel extends JPanel implements Observer, Constants{
+public class StatPanel extends JPanel implements Constants{
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
     private JPanel scrollPanel;
-
+    private HashMap<String, Stat> collection;
 	public StatPanel() {
+		collection = new HashMap<String, Stat>();
 		setPreferredSize(new Dimension(STAT_PANEL_WIDTH, STAT_PANEL_HEIGHT));
 		setLayout(new BorderLayout());
 		buildGUI();
@@ -23,31 +25,28 @@ public class StatPanel extends JPanel implements Observer, Constants{
 		scrollPane = new JScrollPane(scrollPanel);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);	
-			// textArea = new JTextArea(20,20);
-			// scrollPanel.add(textArea);
-			// JTextArea a1 = new JTextArea(20,20);
-			// scrollPanel.add(a1);
-			// JTextArea a2 = new JTextArea(20,20);
-			// scrollPanel.add(a2);
-			// JTextArea a3 = new JTextArea(20,20);
-			// scrollPanel.add(a3);
-			// JTextArea a4 = new JTextArea(20,20);
-			// scrollPanel.add(a4);
+        	addPanels(new Stat(1));
+        	addPanels(new Stat(2));
+        	addPanels(new Stat(3));
+        	addPanels(new Stat(4));
+        	addPanels(new Stat(5));			
 		add(scrollPane, BorderLayout.CENTER);	
 
 	}
 
 	public void addPanels(Stat panel){
+		collection.put(panel.getSpriteName(), panel);
 		scrollPanel.add(panel);
 	}
-	
-	public void update(Observable o, Object arg) {
-        final Object finalArg = arg;
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                textArea.append(finalArg.toString());
-                textArea.append("\n");
-            }
-        });
-    }
+
+	public void removePanel(){
+		scrollPanel.remove(collection.get("namae"+collection.size()));
+		collection.remove("namae"+collection.size());
+		this.repaint();
+	}
+
+
+	public void updateStat(){}
+	public void updateOrder(){}
+
 }
