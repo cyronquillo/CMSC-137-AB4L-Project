@@ -93,6 +93,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		gamePanel = new JPanel(new BorderLayout());
 		cardPanel = new JPanel(new CardLayout());
 		chatPanel = new ChatPanel(access, this);
+		chatPanel.setPreferredSize(new Dimension(CHAT_PANEL_WIDTH, CHAT_PANEL_HEIGHT));
 		statPanel = new StatPanel();
 		gamePanel.add(chatPanel, BorderLayout.WEST);
 		gamePanel.add(this, BorderLayout.CENTER);

@@ -26,6 +26,8 @@ public class ChatPanel extends JPanel implements Observer, Constants {
     private ChatAccess chatAccess;
     private Robot robot;
     private GhostWarsClient client;
+
+
     public ChatPanel(ChatAccess chatAccess, GhostWarsClient client) {
         this.chatAccess = chatAccess;
         this.client = client;
@@ -34,18 +36,28 @@ public class ChatPanel extends JPanel implements Observer, Constants {
     }
 
     private void buildGUI() {
-        chatArea = new JTextArea(21, 20);
+        JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(150, 250));
+        panel.setOpaque(false);
+
+        chatArea = new JTextArea(20, 20);
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);
 
         setLayout(new GridBagLayout());
+
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
+        add(panel, c);
+        c.gridy = 1;
+        //chatArea.setBounds(15, 300, 220, 300);
         add(new JScrollPane(chatArea), c);
             
         chatBox = new JTextField();
-        chatBox.setPreferredSize(new Dimension(CHAT_PANEL_WIDTH, 100));
+        chatBox.setPreferredSize(new Dimension(220, 50));
+        //chatBox.setBounds(15, 630, 220, 50);
+        //add(chatBox);
         c.gridy = 1;
         add(chatBox, c);
 
