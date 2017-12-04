@@ -213,6 +213,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 							int life = Integer.parseInt(object[7]);
 							int health = Integer.parseInt(object[8]);
 							int speed = Integer.parseInt(object[9]);
+							String original_color = state.split("\\.")[0]; 
 							if(is_dead){
 								img = gfx.returnImage(state);
 								color = "white";
@@ -234,7 +235,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 								this.color = color;
 								chatPanel.repaint();
 							} else{
-								statPanel.updatePanel(new Stat(name, life, health, size, speed, color));
+								statPanel.updatePanel(new Stat(name, life, health, size, speed, original_color));
 							}
 							ClientSprite spr = new ClientSprite(name, x, y, color, position, img);
 							csHash.put(name,spr);
@@ -362,7 +363,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 		
 		// pause drawing
 		if(this.is_paused == PAUSED){
-			System.out.println("dapat nagpprint to");
 			Color curr = g.getColor();
 			g.setColor(new Color(0,0,0,160));											//paints the panel over by a rectangle when paused
 			g.fillRect(0,0,FRAME_WIDTH,FRAME_HEIGHT);

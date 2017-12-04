@@ -95,6 +95,8 @@ public class Stat extends JPanel implements Constants{
             damage = 20;
         }
         g.drawString("Damage: " + damage, 20, 230);
+
+        
 	}
 
  	public Color getHealthColor(int health){

@@ -128,7 +128,6 @@ public class Missile extends Thread implements Constants{
 		}
 		storage.remove(this);
 		broadcaster.broadcast(game.toString());
-
 	}
 
 

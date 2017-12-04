@@ -166,6 +166,7 @@ public class Sprite implements Runnable, Constants{
 				this.speed = NORMAL_SPEED;
 			} else{
 				broadcaster.broadcast("AUDIO Lost " + this.name );
+				this.health = 0;
 				this.state = "SpriteRIP";
 				this.is_dead = IS_DEAD;
 				this.rank = game.getRemainingRank();
