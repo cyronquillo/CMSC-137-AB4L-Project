@@ -40,7 +40,6 @@ public class StatPanel extends JPanel implements Constants{
 		}
 
 		//change line below to addSorted if time allows
-
 		scrollPanel.repaint();
 		this.revalidate();
 		this.repaint();

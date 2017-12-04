@@ -103,8 +103,8 @@ public interface Constants {
 	public static final int BIG_BULLET_SIZE = 25;
 
 	//sprite init attrs
-	public static final int INIT_LIFE = 3;
-	public static final int INIT_HEALTH = 100;
+	public static final int INIT_LIFE = 1;
+	public static final int INIT_HEALTH = 10;
 
 	//werpa size
 	public static final int WERPA_SIZE = 32;

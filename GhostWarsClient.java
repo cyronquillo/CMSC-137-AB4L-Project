@@ -51,6 +51,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 	private boolean is_waiting;
 	private Container c;
 	private String final_data[];
+	public String winPanelData;
 	
 	// essential sprite details
 	public String player_name;
@@ -101,13 +102,13 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 
 		cardPanel.add(gamePanel, GAME_PANEL);
 		cardPanel.add(winPanel, WIN_PANEL);
+		cardPanel.setFocusable(true);
 		this.setFocusable(true);
 
 
 		kh = new KeyHandler(this);
 		frame.addKeyListener(kh);
 		frame.addMouseListener(new MouseAction());
-		// this.add(new JLabel("GG!"));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(CHAT_PANEL_WIDTH+FRAME_WIDTH+STAT_PANEL_WIDTH, FRAME_HEIGHT);
 		frame.setResizable(false);
@@ -154,7 +155,6 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 			
 			server_data = new String(buffer);
 			server_data = server_data.trim();
-			// printDataString(server_data);
 
 			if (!is_connected){
 				if(server_data.startsWith("MAP")){
@@ -286,6 +286,7 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					this.repaint();
 				} else if(server_data.startsWith("GAMEOVER")){
 					is_game_over = true;
+					winPanelData = server_data;
 					System.out.println(server_data);
 					this.repaint();
 				}
@@ -598,8 +599,10 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 						chatPanel.setFocus();
 						break;	
 					case KeyEvent.VK_SPACE:
-						winPanel.updateResults(server_data);
+						winPanel.updateResults(src.winPanelData);
+						
 						CardLayout resultsCard = (CardLayout)cardPanel.getLayout();
+						cardPanel.requestFocus();
 						resultsCard.show(cardPanel, WIN_PANEL);
 						break;
 				}
