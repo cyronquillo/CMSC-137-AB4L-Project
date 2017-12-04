@@ -100,13 +100,20 @@ public class ChatPanel extends JPanel implements Observer, Constants {
 
 
         g.drawString("Name: " + client.getName(), 20, 40);
-        g.drawString("Health: ", 20, 65);
-        g.fillRoundRect(110, 40, client.getHealth(), 14, 10, 10);
-        g.drawString("Life: ", 140, 65);
+        g.drawString("Health: ", 20, 85);
         
+        g.fillRoundRect(75, 74, INIT_HEALTH, 14, 10, 10);
+        Color col = getHealthColor(client.getHealth());
+        Color prev = g.getColor();
+        g.setColor(col);
+        g.fillRoundRect(75, 74, client.getHealth(), 14, 10, 10);
+        g.setColor(prev);
+        g.drawString("Life: ", 20, 130);
+        
+
         Image img = gfx.returnImage(client.getCurrSpriteColor() + "Down");
         for(int i = 0; i < client.getLife(); i++){
-            g.drawImage(img, 150 + (20) * (i+1),50, 15, 15, null);
+            g.drawImage(img, 30 + (20) * (i+1),115, 15, 15, null);
         }
 
         String speed = "1x";
@@ -122,14 +129,23 @@ public class ChatPanel extends JPanel implements Observer, Constants {
                 break;
         }
 
-        g.drawString("Speed: " + speed, 20, 80);
+        g.drawString("Speed: " + speed, 20, 180);
         int damage = 40;
         if(client.getBulletSize() == BULLET_SIZE){
             damage = 20;
         }
-        g.drawString("Damage: " + damage, 140, 80);
+        g.drawString("Damage: " + damage, 20, 230);
     }
 
+    public Color getHealthColor(int health){
+        if(health <= 20){
+            return Color.RED;
+        } else if(health <= 60){
+            return Color.YELLOW;
+        } else{
+            return Color.GREEN;
+        }
+    }
     public void update(Observable o, Object arg) {
         final Object finalArg = arg;
         SwingUtilities.invokeLater(new Runnable() {

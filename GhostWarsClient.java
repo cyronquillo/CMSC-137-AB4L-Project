@@ -178,8 +178,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 					System.out.println("Connected to the server boi!");
 					String name = server_data.split(" ")[1].trim();
 					System.out.println("init once");
-
-					statPanel.updatePanel(new Stat(name, INIT_LIFE, INIT_HEALTH, BULLET_SIZE, NORMAL_SPEED, color));
+					if(!player_name.equals(name)){
+						statPanel.updatePanel(new Stat(name, INIT_LIFE, INIT_HEALTH, BULLET_SIZE, NORMAL_SPEED, color));
+					}
 					this.repaint();
 					chatPanel.repaint();
 					statPanel.repaint();
@@ -232,8 +233,9 @@ public class GhostWarsClient extends JPanel implements Runnable, Constants {
 								this.speed = speed;
 								this.color = color;
 								chatPanel.repaint();
+							} else{
+								statPanel.updatePanel(new Stat(name, life, health, size, speed, color));
 							}
-							statPanel.updatePanel(new Stat(name, life, health, size, speed, color));
 							ClientSprite spr = new ClientSprite(name, x, y, color, position, img);
 							csHash.put(name,spr);
 						} else if(object[0].startsWith("MISSILE")){

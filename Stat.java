@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Color;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.File;
@@ -58,14 +59,21 @@ public class Stat extends JPanel implements Constants{
 
 
 
-        g.drawString("Name: " + this.name, 20, 40);
-        g.drawString("Health: ", 20, 65);
-        g.fillRoundRect(110, 40, this.health, 14, 10, 10);
-        g.drawString("Life: ", 140, 65);
+       	g.drawString("Name: " + this.name, 20, 40);
+        g.drawString("Health: ", 20, 85);
         
+        g.fillRoundRect(75, 74, INIT_HEALTH, 14, 10, 10);
+        Color col = getHealthColor(this.health);
+        Color prev = g.getColor();
+        g.setColor(col);
+        g.fillRoundRect(75, 74, this.health, 14, 10, 10);
+        g.setColor(prev);
+        g.drawString("Life: ", 20, 130);
+        
+
         Image img = gfx.returnImage(this.color + "Down");
         for(int i = 0; i < this.life; i++){
-            g.drawImage(img, 150 + (20) * (i+1),50, 15, 15, null);
+            g.drawImage(img, 30 + (20) * (i+1),115, 15, 15, null);
         }
 
         String speed = "1x";
@@ -81,13 +89,23 @@ public class Stat extends JPanel implements Constants{
                 break;
         }
 
-        g.drawString("Speed: " + speed, 20, 80);
+        g.drawString("Speed: " + speed, 20, 180);
         int damage = 40;
-        if(bullet_size == BULLET_SIZE){
+        if(this.bullet_size == BULLET_SIZE){
             damage = 20;
         }
-        g.drawString("Damage: " + damage, 140, 80);
+        g.drawString("Damage: " + damage, 20, 230);
 	}
+
+ 	public Color getHealthColor(int health){
+        if(health <= 20){
+            return Color.RED;
+        } else if(health <= 60){
+            return Color.YELLOW;
+        } else{
+            return Color.GREEN;
+        }
+    }
 
 
 
