@@ -24,7 +24,15 @@ public class WinPanel extends JPanel implements Observer, Constants{
 		sprCollection = new HashMap<Integer, ClientSprite>();
 		setPreferredSize(new Dimension(1500, 800));
 		this.repaint();
-
+		this.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent e){
+				System.exit(0);
+			}
+			public void mouseEntered(MouseEvent e){}
+			public void mouseExited(MouseEvent e){}
+			public void mousePressed(MouseEvent e){}
+			public void mouseReleased(MouseEvent e){}
+		});
 	}
 
 
