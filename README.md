@@ -17,11 +17,8 @@ Compile all files first using the following command:
 
 ## Running
 ```
-In the Server side:
-* `java instantiation.GhostwarsServer <num_of_players>`
 
-In the Client side:
-* `java instantiation.GhostWarsClient <server_ip> <player_name>`
+* `java instantiation.Ghostwars `
 
 ```
 ## Conventions
